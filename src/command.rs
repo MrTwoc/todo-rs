@@ -23,9 +23,9 @@ pub fn command_handle(input: &str) {
 fn command_sysinfo() {
     // let mut sys = sysinfo::System::new_all();
     let mut sys = sysinfo::System::new();
-    // sys.refresh_all();
-    sys.refresh_cpu_usage();
-    sys.refresh_memory();
+    sys.refresh_all();
+    // sys.refresh_cpu_usage();
+    // sys.refresh_memory();
 
     if let Some(process) = sys.process(sysinfo::Pid::from(std::process::id() as usize)) {
         println!("内存使用 > {} MB", process.memory() / 1024 / 1024);
