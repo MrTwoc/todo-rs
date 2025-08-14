@@ -7,7 +7,6 @@ edition = "2024"
 sysinfo = "0.37.0"
 owo-colors = "4"
 
-
 [profile.dev]
 opt-level = 1  # 开发模式基础优化
 

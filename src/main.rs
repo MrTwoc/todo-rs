@@ -1,15 +1,12 @@
 use std::io::{self, Write};
 
 use owo_colors::OwoColorize;
-use todo_rs::{about, command};
+use todo_rs::{about, cmd_handler};
 
-const HELP_INFO: &str = r#"
-'help'将显示帮助信息
-'exit'/'quit'/'q'将退出程序
-"#;
 fn main() {
-    print!("{}\n", about::PRINT_TITLE.green());
-    print!("{}\n", &HELP_INFO);
+    // 前期临时用print打印，后期想改为BufWriter，不知道能否进一步降低内存和CPU占用
+    print!("{}\n", &about::PRINT_TITLE.green());
+    print!("{}\n", &about::TITLE_INFO.green());
 
     run();
 }
@@ -18,7 +15,7 @@ fn run() {
     let mut input = String::with_capacity(128); // 预分配缓冲区
 
     loop {
-        print!("> ");
+        print!("{}> ", "------------------------------\n".green());
         std::io::stdout().flush().unwrap();
         input.clear();
         io::stdin().read_line(&mut input).expect("命令输入失败");
@@ -30,10 +27,11 @@ fn run() {
                 std::process::exit(0);
             }
             "help" => {
-                print!("{}", &HELP_INFO);
+                print!("{}", &about::HELP_INFO);
             }
             _ => {
-                command::command_handle(&input);
+                // 进入命令处理阶段
+                cmd_handler::command_handle(&input);
             }
         }
     }

@@ -8,15 +8,30 @@ ___________        .___
 "#;
 
 pub const _ABOUT_INFO: &str = r#"
-author: 1337
-email: <EMAIL>
+author: 1
+email: 1
+"#;
+
+pub const TITLE_INFO: &str = r#"
+Todo-rs =>
+'help'将显示帮助信息
+'exit'/'quit'/'q'将退出程序
+"#;
+
+pub const HELP_INFO: &str = r#"
+'help'将显示帮助信息
+'exit'/'quit'/'q'将退出程序
+'clear'清空控制台
+'sysinfo'将显示系统信息
+'add'/'del'/'edit'/'list'将显示相应信息
 "#;
 
 /*
-相关的emoji推荐
-🔴 已经完成  🟡 待定中
+相关的emoji推荐,用于美化输出
+🔴
+✅✔️🟢已经完成  🟡 待定中
 🔵 次要项目  ✅ 需要完成
-✅ 完成的任务 ⏳ 进行中的任务 ⚠️ 重要提醒
+⏳ 进行中的任务 ⚠️ 重要提醒
 📅 计划任务 🔄 重复性任务 ❌ 取消的任务
 ⭐ 高优先级 🔍 需要复查 📌 长期任务
 💡 新想法 ❗️ 常见错误 ❔ 常见问题
