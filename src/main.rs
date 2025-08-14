@@ -1,5 +1,6 @@
 use std::io::{self, Write};
 
+use owo_colors::OwoColorize;
 use todo_rs::{about, command};
 
 const HELP_INFO: &str = r#"
@@ -7,8 +8,7 @@ const HELP_INFO: &str = r#"
 'exit'/'quit'/'q'将退出程序
 "#;
 fn main() {
-    print!("{}\n", about::PRINT_TITLE);
-    print!("---------------------------\n");
+    print!("{}\n", about::PRINT_TITLE.green());
     print!("{}\n", &HELP_INFO);
 
     run();

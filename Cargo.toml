@@ -4,3 +4,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+sysinfo = "0.37.0"
+owo-colors = "4"
+
+
+[profile.dev]
+opt-level = 1  # 开发模式基础优化
+
+[profile.release]
+opt-level = 3        # 最高级别优化
+lto = true           # 启用链接时优化
+codegen-units = 1    # 减少代码生成单元提升优化效果
+panic = "abort"      # 替换unwinding减少二进制体积
+incremental = false  # 关闭增量编译（针对release）
