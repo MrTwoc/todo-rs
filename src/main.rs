@@ -31,7 +31,9 @@ fn run() {
             }
             _ => {
                 // 进入命令处理阶段
-                cmd_handler::command_handle(&input);
+                if let Err(e) = cmd_handler::command_handle(&input) {
+                    eprintln!("命令处理失败: {}", e);
+                }
             }
         }
     }

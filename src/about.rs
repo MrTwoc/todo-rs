@@ -7,10 +7,10 @@ ___________        .___
                     \/                            \/ 
 "#;
 
-pub const _ABOUT_INFO: &str = r#"
-author: 1
-email: 1
-"#;
+// pub const ABOUT_INFO: &str = r#"
+// author: 1
+// email: 1
+// "#;
 
 pub const TITLE_INFO: &str = r#"
 Todo-rs =>
@@ -29,7 +29,7 @@ pub const HELP_INFO: &str = r#"
 /*
 相关的emoji推荐,用于美化输出
 🔴
-✅✔️🟢已经完成  🟡 待定中
+✅✔️🟢已经完成  🟡⏸️待定中
 🔵 次要项目  ✅ 需要完成
 ⏳ 进行中的任务 ⚠️ 重要提醒
 📅 计划任务 🔄 重复性任务 ❌ 取消的任务

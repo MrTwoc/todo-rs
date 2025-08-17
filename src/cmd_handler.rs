@@ -6,20 +6,20 @@ use owo_colors::OwoColorize;
     第一级指令：add、list、edit、del、sysinfo、clear、exit、quit、q、help
 */
 
-pub fn command_handle(input: &str) {
+pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<&str> = input.trim().split_whitespace().collect();
 
     if args.is_empty() {
-        return;
+        return Ok(());
     }
 
     match args[0] {
-        "add" => println!("add命令"),
-        "list" => println!("list命令"),
-        "edit" => println!("edit命令"),
-        "del" => println!("del命令"),
+        "add" => command_add(&args)?,
+        "list" => command_list()?,
+        "edit" => command_edit(&args)?,
+        "del" => command_del(&args)?,
         "sysinfo" => {
-            command_sysinfo();
+            command_sysinfo()?;
         }
         "clear" => {
             command_clear();
@@ -29,4 +29,6 @@ pub fn command_handle(input: &str) {
         }
         _ => eprintln!("{} > {}", "未知命令".red(), args[0]),
     }
+
+    Ok(())
 }
