@@ -36,24 +36,14 @@ pub fn command_add(args: &[&str]) -> Result<(), Box<dyn Error>> {
             "参数不足,使用方法: add <任务名称> <截止时间> option[描述] option[分组]".into(),
         );
     }
-    // 获取任务ID
-    let id = Target::get_id()?;
-    let target_name = args.get(1).ok_or("缺少任务名称")?.to_string();
-    let deadline = args.get(2).ok_or("缺少截至时间")?.to_string();
-    let target_status = TargetStatus::default();
-    let description = args.get(3).map(|s| s.to_string());
-    let group = args.get(4).map(|s| s.to_string());
 
-    let task = Target {
-        id: Some(id),
-        target_name,
-        deadline,
-        target_status,
-        description,
-        group,
-    };
-
-    Target::add(&task)?;
+    // 仅负责参数解析和类型转换
+    Target::add(
+        args[1].to_string(),
+        args[2].to_string(),
+        args.get(3).map(|s| s.to_string()),
+        args.get(4).map(|s| s.to_string()),
+    )?;
     Ok(())
 }
 pub fn command_list() -> Result<(), Box<dyn Error>> {

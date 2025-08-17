@@ -54,15 +54,32 @@ impl Target {
             group: None,
         }
     }
-    pub fn add(&self) -> Result<(), Box<dyn Error>> {
+    pub fn add(
+        target_name: String,
+        deadline: String,
+        description: Option<String>,
+        group: Option<String>,
+    ) -> Result<(), Box<dyn Error>> {
         let mut tasks = read_form_json()?;
-        tasks.push(self.clone());
+
+        // 生成任务ID(原command_add中的逻辑)
+        // let id = tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1;
+
+        // 创建任务对象
+        tasks.push(Target {
+            id: Some(tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1),
+            target_name,
+            deadline,
+            target_status: TargetStatus::default(),
+            description,
+            group,
+        });
+
         write_to_json(&tasks)?;
-        println!(
-            "添加成功=>
-        任务：{:?}",
-            &self.target_name
-        );
+        tasks
+            .last()
+            .map(|task| println!("添加成功=>\n任务：{:?}", task.target_name));
+
         Ok(())
     }
 
@@ -151,19 +168,23 @@ pub fn write_to_json(task: &[Target]) -> Result<(), Box<dyn Error>> {
 
 // 从json文件中读取电影列表
 pub fn read_form_json() -> Result<Vec<Target>, Box<dyn Error>> {
-    let file = match fs::File::open("task.json") {
-        Ok(f) => f,
+    match fs::File::open("task.json") {
+        Ok(f) => {
+            let reader = io::BufReader::new(f);
+            match serde_json::from_reader(reader) {
+                Ok(task) => Ok(task),
+                Err(e) if e.is_eof() => Ok(Vec::new()),
+                Err(e) => {
+                    println!("读取文件失败: {}", e);
+                    Err(e.into())
+                }
+            }
+        }
+        // 优化: 文件不存在时不打印错误,直接返回空列表
+        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(Vec::new()),
         Err(e) => {
             println!("读取文件失败: {}", e);
-            return Ok(Vec::new());
+            Err(e.into())
         }
-    };
-    let reader = io::BufReader::new(file);
-    // let task: Vec<Target> = serde_json::from_reader(reader)?;
-    match serde_json::from_reader(reader) {
-        Ok(task) => Ok(task),
-        // 若是空文件，则返回空列表，避免eof崩溃
-        Err(e) if e.is_eof() => Ok(Vec::new()),
-        Err(e) => Err(e.into()),
     }
 }
