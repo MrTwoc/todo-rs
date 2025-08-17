@@ -126,7 +126,7 @@ impl Target {
             let field = args[i];
             let value = args[i + 1];
 
-            // 任务状态单独修改
+            // 任务状态可用指令单独修改
             match field {
                 "name" => task.target_name = value.to_string(),
                 "deadline" => task.deadline = value.to_string(),

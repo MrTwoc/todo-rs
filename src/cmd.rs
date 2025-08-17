@@ -32,12 +32,9 @@ pub fn command_clear() {
 pub fn command_add(args: &[&str]) -> Result<(), Box<dyn Error>> {
     // 判断args是否为空
     if args.len() < 3 {
-        eprintln!(
-            "执行失败: 指令参数不足
-请输入: add <任务名称> <截至时间> <任务描述> <分组>
-例如: add '任务名称' '2023-12-31' '任务描述' '分组'"
+        return Err(
+            "参数不足,使用方法: add <任务名称> <截止时间> option[描述] option[分组]".into(),
         );
-        return Ok(());
     }
     // 获取任务ID
     let id = Target::get_id()?;
@@ -82,7 +79,7 @@ pub fn command_edit(args: &[&str]) -> Result<(), Box<dyn Error>> {
     if args.len() < 3 || (args.len() - 1) % 2 == 0 {
         eprintln!(
             "执行失败: 指令参数错误
-请输入: edit <任务ID> <字段> <新值>...
+请输入: edit <任务ID> <字段> [修改内容]...
 例如: edit 1 name 任务1号
 包含字段: name, deadline, description, group"
         );
