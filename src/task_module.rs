@@ -62,9 +62,6 @@ impl Target {
     ) -> Result<(), Box<dyn Error>> {
         let mut tasks = read_form_json()?;
 
-        // 生成任务ID(原command_add中的逻辑)
-        // let id = tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1;
-
         // 创建任务对象
         tasks.push(Target {
             id: Some(tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1),
