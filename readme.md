@@ -4,24 +4,24 @@
 开发日志：https://mrtowc.xlog.app/1Todo-rs
 
 #### 借鉴资料
-jemalloc 内存分配器
-https://juejin.cn/post/7350320544526516263 
-https://www.cnblogs.com/RioTian/p/18970973
-comfy-table 表格输出
-https://crates.io/crates/comfy-table
-将终端搬入浏览器
-https://zellij.dev/news/web-client-multiple-pane-actions/
+jemalloc 内存分配器  
+https://juejin.cn/post/7350320544526516263  
+https://www.cnblogs.com/RioTian/p/18970973  
+comfy-table 表格输出  
+https://crates.io/crates/comfy-table  
+将终端搬入浏览器  
+https://zellij.dev/news/web-client-multiple-pane-actions/  
 
 #### 快捷指令
-'help'将显示帮助信息
-'exit'/'quit'/'q'将退出程序
-'clear'清空控制台
-'sysinfo'将显示系统信息
-'add'/'del'/'edit'/'list'将显示相应信息
-'/done id'、'/undone id'将任务状态改为完成或改错了，再改为未完成
-'/group done' 
-'/save'备份数据
-'/calendar' 显示日历？
+'help'将显示帮助信息  
+'exit'/'quit'/'q'将退出程序  
+'clear'清空控制台  
+'sysinfo'将显示系统信息  
+'add'/'del'/'edit'/'list'将显示相应信息  
+'/done id'、'/undone id'将任务状态改为完成或改错了，再改为未完成  
+'/group done'   
+'/save'备份数据  
+'/calendar' 显示日历？  
 
 #### 计划项目功能
 - 任务完成类型：
