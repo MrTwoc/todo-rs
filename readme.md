@@ -5,7 +5,7 @@
 
 #### 借鉴资料
 jemalloc 内存分配器
-https://juejin.cn/post/7350320544526516263
+https://juejin.cn/post/7350320544526516263 
 https://www.cnblogs.com/RioTian/p/18970973
 comfy-table 表格输出
 https://crates.io/crates/comfy-table
@@ -19,7 +19,7 @@ https://zellij.dev/news/web-client-multiple-pane-actions/
 'sysinfo'将显示系统信息
 'add'/'del'/'edit'/'list'将显示相应信息
 '/done id'、'/undone id'将任务状态改为完成或改错了，再改为未完成
-
+'/group done' 
 '/save'备份数据
 '/calendar' 显示日历？
 
@@ -41,7 +41,11 @@ https://zellij.dev/news/web-client-multiple-pane-actions/
 - 批量操作: 
     输入一次指令，编辑多个任务，比如批量完成任务。
 - 完成记录
-    1. 每个任务完成后，会记录下完成时间
+    每个任务完成后，会记录下完成时间
+- 日志记录
+    每次操作都会记录下操作时间、操作类型、操作内容
+    同时记录下当时所占内存、cpu占用率
+
 #### 项目优化
 删除任务时不对任务ID进行重新排序
 或者id可以为 1-1/0，1代表第1个任务，1/0表示任务是否有效

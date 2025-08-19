@@ -160,7 +160,7 @@ impl Target {
             .set_content_arrangement(ContentArrangement::Dynamic);
 
         table.set_header(vec![
-            "任务ID",
+            "任务ID[ 🟢 ✅ ]",
             "任务名称",
             "任务描述",
             "截至日期",
@@ -220,17 +220,16 @@ impl Target {
                 "description" => task.description = Some(value.to_string()),
                 "group" => task.group = Some(value.to_string()),
                 "level" => {
-                    task.level = match value {
+                    task.level = match value.to_lowercase().as_str() {
                         "normal" => TaskLevel::Normal,
                         "medium" => TaskLevel::Medium,
                         "high" => TaskLevel::High,
                         _ => {
-                            // eprintln!("不支持的任务级别: {}", value);
                             return Err(format!("不支持的任务级别: {}", value).into());
                         }
                     }
                 }
-                _ => eprintln!("不支持的字段: {}", field),
+                _ => return Err(format!("不支持的字段: {}", field).into()),
             }
         }
         write_to_json(&tasks)?;
