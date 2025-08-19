@@ -9,6 +9,8 @@ https://juejin.cn/post/7350320544526516263
 https://www.cnblogs.com/RioTian/p/18970973
 comfy-table 表格输出
 https://crates.io/crates/comfy-table
+将终端搬入浏览器
+https://zellij.dev/news/web-client-multiple-pane-actions/
 
 #### 快捷指令
 'help'将显示帮助信息
@@ -16,7 +18,8 @@ https://crates.io/crates/comfy-table
 'clear'清空控制台
 'sysinfo'将显示系统信息
 'add'/'del'/'edit'/'list'将显示相应信息
-'/done id'将任务状态改为完成
+'/done id'、'/undone id'将任务状态改为完成或改错了，再改为未完成
+
 '/save'备份数据
 '/calendar' 显示日历？
 
@@ -27,8 +30,11 @@ https://crates.io/crates/comfy-table
 - 多窗口与托盘化运行：
 可以在多个窗口中查看和管理任务，例如查看指定组的任务详情，就会在新窗口中显示
 - 任务emoji美化输出：
-[emoji-优先级]任务名称[emoji-任务标签]——[emoji-红黄绿状态]任务截至日期——任务完成类型
+任务名前显示emoji符号，显示任务状态。
+红/黄/绿 字体颜色： 任务级别(一般/重要/紧急)
+字体画删除线：任务完成状态
 单任务/整个组内任务完成就画一条删除线。
+最后显示截至日期与剩余天数
 - 编辑时，若输入内容为空，则编辑不修改原内容<br>
 - 按关键词查找任务<br>
 - 表格化输出<br>

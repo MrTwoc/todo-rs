@@ -8,6 +8,7 @@ sysinfo = "0.37.0"
 owo-colors = "4"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.142"
+comfy-table = "7.1.4"
 
 [profile.dev]
 opt-level = 1  # 开发模式基础优化

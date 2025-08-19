@@ -71,7 +71,8 @@ pub fn command_edit(args: &[&str]) -> Result<(), Box<dyn Error>> {
             "执行失败: 指令参数错误
 请输入: edit <任务ID> <字段> [修改内容]...
 例如: edit 1 name 任务1号
-包含字段: name, deadline, description, group"
+包含字段: name, deadline, description, group, level
+level: normal, medium, high"
         );
         return Ok(());
     }

@@ -8,6 +8,21 @@ fn main() {
     print!("{}\n", &about::PRINT_TITLE.green());
     print!("{}\n", &about::TITLE_INFO.green());
 
+    // 基础删除线
+    // println!("{}", "已取消的任务".strikethrough());
+    // 组合样式（红色文字+删除线）
+    // println!("{}", "失效条目".red().strikethrough());
+    // let test = format!("{}", "1234你好abcd".yellow().bold().strikethrough());
+    // let test = format!("{}", "1234你好abcd".strikethrough());
+    // println!("{}", test);
+    // println!(
+    //     "{}",
+    //     "风格: 任务完成(灰色+删除线)"
+    //         .truecolor(150, 150, 150)
+    //         .strikethrough()
+    // );
+    // println!("{}", "高级灰".truecolor(180, 180, 180).strikethrough());
+
     run();
 }
 

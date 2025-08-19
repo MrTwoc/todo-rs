@@ -4,6 +4,7 @@ use std::{
     io,
 };
 
+use comfy_table::{ContentArrangement, Table, modifiers::UTF8_ROUND_CORNERS};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -21,6 +22,32 @@ pub struct Target {
     pub description: Option<String>,
     /// 任务分组
     pub group: Option<String>,
+    /// 任务级别
+    pub level: TaskLevel,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum TaskLevel {
+    /// 一般
+    Normal,
+    /// 中等
+    Medium,
+    /// 重要
+    High,
+    // 秘密|机密|绝密
+}
+
+impl std::str::FromStr for TaskLevel {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Normal" | "一般" => Ok(TaskLevel::Normal),
+            "Medium" | "中等" => Ok(TaskLevel::Medium),
+            "High" | "重要" => Ok(TaskLevel::High),
+            _ => Err(format!("无效的任务级别: {}", s)),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -35,6 +62,30 @@ pub enum TargetStatus {
     Canceled,
     /// 已过期
     Expired,
+}
+
+impl std::fmt::Display for TargetStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TargetStatus::Pending => "等待开始",
+            TargetStatus::InProgress => "进行中",
+            TargetStatus::Completed => "已完成",
+            TargetStatus::Canceled => "已取消",
+            TargetStatus::Expired => "已过期",
+        };
+        write!(f, "{s}")
+    }
+}
+
+impl std::fmt::Display for TaskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TaskLevel::Normal => "一般",
+            TaskLevel::Medium => "中等",
+            TaskLevel::High => "重要",
+        };
+        write!(f, "{s}")
+    }
 }
 
 impl Default for TargetStatus {
@@ -52,6 +103,7 @@ impl Target {
             target_status: TargetStatus::default(),
             description: None,
             group: None,
+            level: TaskLevel::Normal,
         }
     }
     pub fn add(
@@ -70,6 +122,7 @@ impl Target {
             target_status: TargetStatus::default(),
             description,
             group,
+            level: TaskLevel::Normal,
         });
 
         write_to_json(&tasks)?;
@@ -101,14 +154,34 @@ impl Target {
     }
 
     pub fn list() -> Result<(), Box<dyn Error>> {
-        let tasks = read_form_json()?;
+        let mut table = Table::new();
+        table
+            .load_preset(UTF8_ROUND_CORNERS)
+            .set_content_arrangement(ContentArrangement::Dynamic);
 
-        for task in tasks {
-            println!(
-                "任务ID:{:?} 任务名称:{:?} 截至:{:?} 状态:{:?} 分组:{:?}",
-                task.id, task.target_name, task.deadline, task.target_status, task.group
-            )
+        table.set_header(vec![
+            "任务ID",
+            "任务名称",
+            "任务描述",
+            "截至日期",
+            "状态",
+            "分组",
+            "级别",
+        ]);
+
+        for task in read_form_json()? {
+            table.add_row(vec![
+                task.id.map_or(0.to_string(), |v| v.to_string()),
+                task.target_name,
+                task.description.as_deref().map_or("无", |s| s).to_string(),
+                task.deadline,
+                task.target_status.to_string(),
+                task.group.as_deref().map_or("无", |s| s).to_string(),
+                task.level.to_string(),
+            ]);
         }
+
+        println!("{table}");
         Ok(())
     }
 
@@ -140,13 +213,23 @@ impl Target {
             let field = args[i];
             let value = args[i + 1];
 
-            // 任务状态可用指令单独修改
+            // 任务状态和任务级别用指令单独修改
             match field {
                 "name" => task.target_name = value.to_string(),
                 "deadline" => task.deadline = value.to_string(),
                 "description" => task.description = Some(value.to_string()),
                 "group" => task.group = Some(value.to_string()),
-
+                "level" => {
+                    task.level = match value {
+                        "normal" => TaskLevel::Normal,
+                        "medium" => TaskLevel::Medium,
+                        "high" => TaskLevel::High,
+                        _ => {
+                            // eprintln!("不支持的任务级别: {}", value);
+                            return Err(format!("不支持的任务级别: {}", value).into());
+                        }
+                    }
+                }
                 _ => eprintln!("不支持的字段: {}", field),
             }
         }
