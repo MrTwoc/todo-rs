@@ -28,6 +28,8 @@ pub struct Target {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TaskLevel {
+    /// 低
+    Low,
     /// 一般
     Normal,
     /// 中等
@@ -80,9 +82,10 @@ impl std::fmt::Display for TargetStatus {
 impl std::fmt::Display for TaskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            TaskLevel::Normal => "一般",
-            TaskLevel::Medium => "中等",
-            TaskLevel::High => "重要",
+            TaskLevel::Low => "低",
+            TaskLevel::Normal => "正常",
+            TaskLevel::Medium => "中",
+            TaskLevel::High => "高",
         };
         write!(f, "{s}")
     }
@@ -234,6 +237,7 @@ impl Target {
                 "group" => task.group = Some(value.to_string()),
                 "level" => {
                     task.level = match value.to_lowercase().as_str() {
+                        "low" => TaskLevel::Low,
                         "normal" => TaskLevel::Normal,
                         "medium" => TaskLevel::Medium,
                         "high" => TaskLevel::High,
