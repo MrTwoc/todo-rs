@@ -8,8 +8,10 @@ ___________        .___
 "#;
 
 // pub const ABOUT_INFO: &str = r#"
-// author: 1
-// email: 1
+// author: MrTwoc
+// email: 1191422391@qq.com
+// blog: https://mrtowc.xlog.app/
+// github: https://github.com/MrTwoc
 // "#;
 
 pub const TITLE_INFO: &str = r#"

@@ -27,6 +27,9 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
             print!("{}\n", &about::PRINT_TITLE.green());
             print!("{}\n", &about::TITLE_INFO);
         }
+        "table" => {
+            table_demo();
+        }
         _ => eprintln!("{} > {}", "未知命令".red(), args[0]),
     }
 

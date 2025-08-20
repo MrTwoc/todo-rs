@@ -50,5 +50,5 @@ https://zellij.dev/news/web-client-multiple-pane-actions/  <br>
     同时记录下当时所占内存、cpu占用率<br>
 
 #### 项目优化
-删除任务时不对任务ID进行重新排序
+删除任务时不对任务ID进行重新排序<br>
 或者id可以为 1-1/0，1代表第1个任务，1/0表示任务是否有效

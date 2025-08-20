@@ -4,7 +4,7 @@ use std::{
     io,
 };
 
-use comfy_table::{ContentArrangement, Table, modifiers::UTF8_ROUND_CORNERS};
+use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width, presets::UTF8_FULL};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -156,11 +156,15 @@ impl Target {
     pub fn list() -> Result<(), Box<dyn Error>> {
         let mut table = Table::new();
         table
-            .load_preset(UTF8_ROUND_CORNERS)
+            // .apply_modifier(UTF8_HORIZONTAL_ONLY)
+            // // .load_preset(UTF8_ROUND_CORNERS)
+            // .set_content_arrangement(ContentArrangement::Dynamic)
+            .load_preset(UTF8_FULL)
             .set_content_arrangement(ContentArrangement::Dynamic);
 
+        // [ 🟢 ✅ ]
         table.set_header(vec![
-            "任务ID[ 🟢 ✅ ]",
+            "任务ID",
             "任务名称",
             "任务描述",
             "截至日期",
@@ -180,6 +184,15 @@ impl Target {
                 task.level.to_string(),
             ]);
         }
+        // table
+        //     .column_mut(0)
+        //     .unwrap()
+        //     .set_constraint(ColumnConstraint::Absolute(Width::Fixed(8)));
+
+        table
+            .column_mut(2)
+            .unwrap()
+            .set_constraint(ColumnConstraint::Absolute(Width::Fixed(35)));
 
         println!("{table}");
         Ok(())
