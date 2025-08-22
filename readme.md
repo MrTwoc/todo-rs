@@ -13,7 +13,7 @@ https://crates.io/crates/comfy-table  <br>
 https://zellij.dev/news/web-client-multiple-pane-actions/  <br>
 
 #### 简易展示
-![alt text](7fcf0e2fd5f2089b5c2d3b6604921387.png)
+![alt text](image.png)
 
 #### 快捷指令
 'help'将显示帮助信息  <br>
