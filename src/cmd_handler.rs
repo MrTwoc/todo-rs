@@ -1,5 +1,6 @@
 use crate::{about, cmd::*};
 use owo_colors::OwoColorize;
+use std::time::Instant;
 
 /*
     负责指令分发、处理第一级指令
@@ -7,11 +8,13 @@ use owo_colors::OwoColorize;
 */
 
 pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<&str> = input.trim().split_whitespace().collect();
+    let args: Vec<&str> = input.split_whitespace().collect();
 
     if args.is_empty() {
         return Ok(());
     }
+
+    let start = Instant::now();
 
     match args[0] {
         "add" => command_add(&args)?,
@@ -24,13 +27,17 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
         "clear" => {
             command_clear();
             // 清空控制台后重新打印标题
-            print!("{}\n", &about::PRINT_TITLE.green());
-            print!("{}\n", &about::TITLE_INFO);
-        }
-        "table" => {
-            table_demo();
+            println!("{}", &about::PRINT_TITLE.green());
+            println!("{}", &about::TITLE_INFO);
         }
         _ => eprintln!("{} > {}", "未知命令".red(), args[0]),
+    }
+    let duration = start.elapsed();
+    // 自动选择合适单位
+    if duration.as_millis() > 0 {
+        println!("耗时: {}ms", duration.as_millis());
+    } else {
+        println!("耗时: {}µs", duration.as_micros());
     }
 
     Ok(())

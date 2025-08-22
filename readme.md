@@ -21,6 +21,8 @@ https://zellij.dev/news/web-client-multiple-pane-actions/  <br>
 'clear'清空控制台  <br>
 'sysinfo'将显示系统信息  <br>
 'add'/'del'/'edit'/'list'将显示相应信息  <br>
+'list sort 字段名 倒叙 / 正序'
+'list group' 只显示某个组
 '/done id'、'/undone id'将任务状态改为完成或改错了，再改为未完成  <br>
 '/group done'  <br>
 '/save'备份数据  <br>

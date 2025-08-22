@@ -1,10 +1,8 @@
 use std::process::Command;
 use std::result::Result;
 
-use comfy_table::presets::UTF8_FULL;
-use comfy_table::*;
-
 use crate::task_module::*;
+use chrono::NaiveDate;
 use std::error::Error;
 
 /*
@@ -32,6 +30,16 @@ pub fn command_clear() {
     }
 }
 
+pub fn validate_and_parse_date(date_str: &str) -> Result<NaiveDate, Box<dyn Error>> {
+    NaiveDate::parse_from_str(date_str, "%Y-%m-%d").map_err(|_| {
+        format!(
+            "无效日期格式: {}，请使用YYYY-MM-DD格式(例如: 1999-1-1或1999-01-01)",
+            date_str
+        )
+        .into()
+    })
+}
+
 pub fn command_add(args: &[&str]) -> Result<(), Box<dyn Error>> {
     // 判断args是否为空
     if args.len() < 3 {
@@ -39,11 +47,13 @@ pub fn command_add(args: &[&str]) -> Result<(), Box<dyn Error>> {
             "参数不足,使用方法: add <任务名称> <截止时间> option[描述] option[分组]".into(),
         );
     }
+    let deadline = validate_and_parse_date(args[2])?;
 
     // 仅负责参数解析和类型转换
     Target::add(
         args[1].to_string(),
-        args[2].to_string(),
+        // args[2].to_string(),
+        deadline,
         args.get(3).map(|s| s.to_string()),
         args.get(4).map(|s| s.to_string()),
     )?;
@@ -79,7 +89,7 @@ level: low,normal, medium, high"
         );
         return Ok(());
     }
-    Target::edit(&args)?;
+    Target::edit(args)?;
 
     Ok(())
 }
@@ -97,34 +107,4 @@ pub fn command_del(args: &[&str]) -> Result<(), Box<dyn Error>> {
 
     Target::del(id)?;
     Ok(())
-}
-
-pub fn table_demo() {
-    let mut table = Table::new();
-    table.load_preset(UTF8_FULL)
-        .set_content_arrangement(ContentArrangement::Dynamic)
-        .set_width(80)
-        .set_header(vec![
-            Cell::new("Header1").add_attribute(Attribute::Bold),
-            Cell::new("Header2").fg(Color::Green),
-            Cell::new("Header3"),
-        ])
-        .add_row(vec![
-             Cell::new("This is a bold text").add_attribute(Attribute::Bold),
-             Cell::new("This is a green text").fg(Color::Green),
-             Cell::new("This one has black background").bg(Color::Black),
-        ])
-        .add_row(vec![
-            Cell::new("Blinky boi").add_attribute(Attribute::SlowBlink),
-            Cell::new("This table's content is dynamically arranged. The table is exactly 80 characters wide.\nHere comes a reallylongwordthatshoulddynamicallywrap"),
-            Cell::new("COMBINE ALL THE THINGS")
-                .fg(Color::Green)
-                .bg(Color::Black)
-                .add_attributes(vec![
-                    Attribute::Bold,
-                    Attribute::SlowBlink,
-                ])
-        ]);
-
-    println!("{table}");
 }

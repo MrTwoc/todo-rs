@@ -5,8 +5,8 @@ use todo_rs::{about, cmd_handler};
 
 fn main() {
     // 前期临时用print打印，后期想改为BufWriter，不知道能否进一步降低内存和CPU占用
-    print!("{}\n", &about::PRINT_TITLE.green());
-    print!("{}\n", &about::TITLE_INFO.green());
+    println!("{}", &about::PRINT_TITLE.green());
+    println!("{}", &about::TITLE_INFO.green());
 
     // println!(
     //     "{}",
