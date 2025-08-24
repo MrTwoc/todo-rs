@@ -8,14 +8,6 @@ fn main() {
     println!("{}", &about::PRINT_TITLE.green());
     println!("{}", &about::TITLE_INFO.green());
 
-    // println!(
-    //     "{}",
-    //     "风格: 任务完成(灰色+删除线)"
-    //         .truecolor(150, 150, 150)
-    //         .strikethrough()
-    // );
-    // println!("{}", "高级灰".truecolor(180, 180, 180).strikethrough());
-
     run();
 }
 

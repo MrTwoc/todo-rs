@@ -94,17 +94,45 @@ level: low,normal, medium, high"
     Ok(())
 }
 pub fn command_del(args: &[&str]) -> Result<(), Box<dyn Error>> {
-    // 判断args是否为空，以及超过两个参数的话就无视掉
+    // 判断args是否为空
     if args.len() < 2 {
-        eprintln!(
-            "执行失败: 指令参数不足
-请输入: del <任务ID>
-例如: del 1"
-        );
-        return Ok(());
+        //         eprintln!(
+        //             "执行失败: 指令参数不足
+        // 请输入: del <任务ID>
+        // 例如: del 1"
+        //         );
+        //         return Ok(());
+        return Err("请输入要删除的任务ID，多个ID用空格分隔".into());
     }
-    let id = args.get(1).ok_or("缺少任务ID")?.parse::<u32>()?;
+    // let id = args.get(1).ok_or("缺少任务ID")?.parse::<u32>()?;
+    let ids: Vec<u32> = args[1..]
+        .iter()
+        .map(|s| s.parse())
+        .collect::<Result<_, _>>()?;
 
-    Target::del(id)?;
+    Target::del_many(&ids)?;
+    Ok(())
+}
+
+pub fn command_update_status(args: &[&str]) -> Result<(), Box<dyn Error>> {
+    if args.len() < 2 {
+        return Err("参数不匹配，使用方法: status <任务ID> <状态>\n状态分类：pause, active, done, cancel, outtime".into());
+    }
+
+    let status = match args[1] {
+        "pause" => TargetStatus::Pause,
+        "active" => TargetStatus::Active,
+        "done" => TargetStatus::Done,
+        "cancel" => TargetStatus::Cancel,
+        "outtime" => TargetStatus::OutTime,
+        _ => return Err("无效的状态参数，可选值: pause, active, done, cancel, outtime".into()),
+    };
+    let ids: Vec<u32> = args[2..]
+        .iter()
+        .map(|s| s.parse())
+        .collect::<Result<_, _>>()?;
+
+    Target::update_status(&ids, status)?;
+
     Ok(())
 }

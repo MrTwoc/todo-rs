@@ -24,14 +24,22 @@ pub const HELP_INFO: &str = r#"
 'help'将显示帮助信息
 'exit'/'quit'/'q'将退出程序
 'clear'清空控制台
-'sysinfo'将显示系统信息
+'sysinfo'显示内存与cpu占用率
 'add'/'del'/'edit'/'list'将显示相应信息
+
+add <名称> <截止日期>
+del <id> <id> <...> 【批量删除】
+edit <id> <字段> <新值>
+包含字段: name, deadline, description, group, level
+list 列出所有任务
+status <id> <id> <...> <状态> 【批量修改】
+状态: pause(暂停), active(进行中), done(已完成), cancel(已取消), outtime(已过期)
 "#;
 
 /*
 相关的emoji推荐,用于美化输出
 🔴
-✅✔️🟢已经完成  🟡⏸️待定中
+✅✔️🟢已经完成  🟡⏸️待定中 🔥已过期
 🔵 次要项目  ✅ 需要完成
 ⏳ 进行中的任务 ⚠️ 重要提醒
 📅 计划任务 🔄 重复性任务 ❌ 取消的任务

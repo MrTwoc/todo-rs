@@ -21,6 +21,9 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
         "list" => command_list()?,
         "edit" => command_edit(&args)?,
         "del" => command_del(&args)?,
+        "status" => {
+            command_update_status(&args)?;
+        }
         "sysinfo" => {
             command_sysinfo()?;
         }

@@ -21,6 +21,7 @@ pub struct Target {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TaskLevel {
+    // 或者给任务级别，改成任务价值，例如价值100
     /// 低
     Low,
     /// 一般
@@ -45,29 +46,41 @@ impl std::str::FromStr for TaskLevel {
     }
 }
 
+// impl std::fmt::Display for TaskLevel {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         let s = match self {
+//             TaskLevel::Low => "低",
+//             TaskLevel::Normal => "正常",
+//             TaskLevel::Medium => "中",
+//             TaskLevel::High => "高",
+//         };
+//         write!(f, "{s}")
+//     }
+// }
+
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub enum TargetStatus {
-    /// 等待开始
-    Pending,
+    /// 暂停中
+    Pause,
     /// 进行中
     #[default]
-    InProgress,
+    Active,
     /// 已完成
-    Completed,
+    Done,
     /// 已取消
-    Canceled,
+    Cancel,
     /// 已过期
-    Expired,
+    OutTime,
 }
 
 impl std::fmt::Display for TargetStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            TargetStatus::Pending => "等待开始",
-            TargetStatus::InProgress => "进行中",
-            TargetStatus::Completed => "已完成",
-            TargetStatus::Canceled => "已取消",
-            TargetStatus::Expired => "已过期",
+            TargetStatus::Pause => "⏸️ 暂停中",
+            TargetStatus::Active => "🗓️ 进行中",
+            TargetStatus::Done => "✅ 已完成",
+            TargetStatus::Cancel => "❌ 已取消",
+            TargetStatus::OutTime => "⏳ 已过期",
         };
         write!(f, "{s}")
     }

@@ -7,7 +7,7 @@ edition = "2024"
 sysinfo = "0.37.0"
 owo-colors = "4"
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.142"
+serde_json = "1.0.143"
 comfy-table = "7.1.4"
 chrono = { version = "0.4.41", features = ["serde"] }
 
@@ -20,3 +20,4 @@ lto = true           # 启用链接时优化
 codegen-units = 1    # 减少代码生成单元提升优化效果
 panic = "abort"      # 替换unwinding减少二进制体积
 incremental = false  # 关闭增量编译（针对release）
+strip = true        # 去除符号表和调试信息
