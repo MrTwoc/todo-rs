@@ -16,6 +16,7 @@ https://rust-book.junmajinlong.com/ch102/tracing.html
 
 #### 简易展示
 ![alt text](image.png)
+![alt text](image-1.png)
 
 #### 快捷指令
 ✅ 'help'将显示帮助信息\
