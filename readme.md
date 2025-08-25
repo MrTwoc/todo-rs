@@ -42,10 +42,10 @@ https://rust-book.junmajinlong.com/ch102/tracing.html
 单任务/整个组内任务完成就画一条删除线。\
 最后显示截至日期与剩余天数
 - ✅ 编辑时，若输入内容为空，则编辑不修改原内容
-- 按关键词查找任务
+- ✅ 按关键词查找任务
 - ✅ 表格化输出
 - ✅ 批量操作: \
-    输入一次指令，编辑多个任务，比如批量完成|删除任务。
+    输入一次指令，编辑多个任务，比如批量done|del任务。
     任务id用空格隔开，例：\
     'status [Pause|Active|Done|Cancel|OutTime] [id]'\
     'del [id]'

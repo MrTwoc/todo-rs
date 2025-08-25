@@ -30,7 +30,7 @@ pub enum TaskLevel {
     Medium,
     /// 重要
     High,
-    // 秘密|机密|绝密
+    // 把任务级别改为价值后，把[秘密|机密|绝密]变成隐藏类型
 }
 
 impl std::str::FromStr for TaskLevel {

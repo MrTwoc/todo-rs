@@ -1,16 +1,16 @@
 use std::error::Error;
 
 use chrono::NaiveDate;
-use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
+// use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 
 use crate::{
-    cmd::validate_and_parse_date,
+    cmd::{show_table, validate_and_parse_date},
     storage::TaskStorage,
     task_module::{Target, TargetStatus, TaskLevel},
 };
 
 // 将原来的UTF8_FULL中的双横线改为单横线,以下是样例
-pub const UTF8_FULL_F: &str = "││──╞─┼╡┆╌┼├┤┬┴┌┐└┘";
+// pub const UTF8_FULL_F: &str = "││──╞─┼╡┆╌┼├┤┬┴┌┐└┘";
 /*
 ┌────────┬──────────┬───────────────────────────────────┬────────────┬───────────┬──────┬──────┐
 │ 任务ID ┆ 任务名称 ┆ 任务描述                          ┆ 截至日期   ┆ 状态      ┆ 分组 ┆ 级别 │
@@ -77,48 +77,8 @@ impl Target {
     }
 
     pub fn list() -> Result<(), Box<dyn Error>> {
-        let mut table = Table::new();
-        table
-            // .apply_modifier(UTF8_HORIZONTAL_ONLY)
-            // // .load_preset(UTF8_ROUND_CORNERS)
-            // .set_content_arrangement(ContentArrangement::Dynamic)
-            // .load_preset(UTF8_FULL)
-            .load_preset(UTF8_FULL_F)
-            .set_content_arrangement(ContentArrangement::Dynamic);
-
-        // [ 🟢 ✅ ]
-        table.set_header(vec![
-            "任务ID",
-            "任务名称",
-            "任务描述",
-            "截至日期",
-            "状态",
-            "分组",
-            "级别",
-        ]);
-        for task in TaskStorage::read()? {
-            table.add_row(vec![
-                task.id.map_or(0.to_string(), |v| v.to_string()),
-                task.target_name,
-                task.description.as_deref().map_or("无", |s| s).to_string(),
-                task.deadline.format("%Y-%m-%d").to_string(),
-                task.target_status.to_string(),
-                task.group.as_deref().map_or("无", |s| s).to_string(),
-                task.level.to_string(),
-            ]);
-        }
-        // table
-        //     .column_mut(0)
-        //     .unwrap()
-        //     .set_constraint(ColumnConstraint::Absolute(Width::Fixed(8)));
-
-        table
-            .column_mut(2)
-            .unwrap()
-            .set_constraint(ColumnConstraint::Absolute(Width::Fixed(20)));
-
-        println!("{table}");
-        Ok(())
+        let tasks = TaskStorage::read()?;
+        show_table(&tasks)
     }
 
     pub fn find_by_id(_id: u32) -> Result<(), Box<dyn Error>> {
@@ -185,5 +145,31 @@ impl Target {
         println!("成功修改");
 
         Ok(())
+    }
+
+    pub fn find(keyword: &str) -> Result<(), Box<dyn Error>> {
+        let tasks = TaskStorage::read()?;
+        let keyword_lower = keyword.to_lowercase();
+
+        // 使用闭包封装匹配逻辑
+        let contains_keyword = |s: &str| s.to_lowercase().contains(&keyword_lower);
+
+        let filtered_tasks = tasks
+            .iter()
+            .filter(|t| {
+                contains_keyword(&t.target_name) // 匹配任务名称
+                || t.description.as_deref().map_or(false, contains_keyword)
+                || t.group.as_deref().map_or(false, contains_keyword)
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+
+        if filtered_tasks.is_empty() {
+            println!("未找到包含'{}'的任务", keyword);
+            return Ok(());
+        }
+
+        // 调用表格函数，打印任务
+        show_table(&filtered_tasks)
     }
 }

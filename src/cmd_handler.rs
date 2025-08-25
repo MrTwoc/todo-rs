@@ -1,6 +1,7 @@
 use crate::{about, cmd::*};
 use owo_colors::OwoColorize;
 use std::time::Instant;
+use tracing::error;
 
 /*
     负责指令分发、处理第一级指令
@@ -21,6 +22,7 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
         "list" => command_list()?,
         "edit" => command_edit(&args)?,
         "del" => command_del(&args)?,
+        "find" => command_find(&args)?,
         "status" => {
             command_update_status(&args)?;
         }
@@ -33,15 +35,13 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
             println!("{}", &about::PRINT_TITLE.green());
             println!("{}", &about::TITLE_INFO);
         }
-        _ => eprintln!("{} > {}", "未知命令".red(), args[0]),
+        _ => {
+            eprintln!("{} > {}", "未知命令".red(), args[0]);
+            error!("未知命令: {:?}", args[0]);
+        }
     }
     let duration = start.elapsed();
-    // 自动选择合适单位
-    if duration.as_millis() > 0 {
-        println!("耗时: {}ms", duration.as_millis());
-    } else {
-        println!("耗时: {}µs", duration.as_micros());
-    }
+    println!("耗时: {}µs", duration.as_micros());
 
     Ok(())
 }

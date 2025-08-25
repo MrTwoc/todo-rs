@@ -3,10 +3,23 @@ use std::result::Result;
 
 use crate::task_module::*;
 use chrono::NaiveDate;
+use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 use std::error::Error;
+use tracing::info;
 
 /*
     负责处理指令
+*/
+
+pub const UTF8_FULL_F: &str = "││──╞─┼╡┆╌┼├┤┬┴┌┐└┘";
+/*
+┌────────┬──────────┬───────────────────────────────────┬────────────┬───────────┬──────┬──────┐
+│ 任务ID ┆ 任务名称 ┆ 任务描述                          ┆ 截至日期   ┆ 状态      ┆ 分组 ┆ 级别 │
+╞────────┼──────────┼───────────────────────────────────┼────────────┼───────────┼──────┼──────╡
+│ 4      ┆ test     ┆ 无                                ┆ 1999-01-04 ┆ 🗓️ 进行中 ┆ 无   ┆ 正常 │
+├╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌╌┤
+│ 5      ┆ test     ┆ 无                                ┆ 1999-01-05 ┆ 🗓️ 进行中 ┆ 无   ┆ 正常 │
+└────────┴──────────┴───────────────────────────────────┴────────────┴───────────┴──────┴──────┘
 */
 
 pub fn command_sysinfo() -> Result<(), Box<dyn Error>> {
@@ -57,10 +70,14 @@ pub fn command_add(args: &[&str]) -> Result<(), Box<dyn Error>> {
         args.get(3).map(|s| s.to_string()),
         args.get(4).map(|s| s.to_string()),
     )?;
+    info!("{:?}", args);
+
     Ok(())
 }
 pub fn command_list() -> Result<(), Box<dyn Error>> {
     Target::list()?;
+    info!("list");
+
     Ok(())
 }
 
@@ -90,6 +107,7 @@ level: low,normal, medium, high"
         return Ok(());
     }
     Target::edit(args)?;
+    info!("{:?}", args);
 
     Ok(())
 }
@@ -111,6 +129,8 @@ pub fn command_del(args: &[&str]) -> Result<(), Box<dyn Error>> {
         .collect::<Result<_, _>>()?;
 
     Target::del_many(&ids)?;
+    info!("{:?}", args);
+
     Ok(())
 }
 
@@ -133,6 +153,58 @@ pub fn command_update_status(args: &[&str]) -> Result<(), Box<dyn Error>> {
         .collect::<Result<_, _>>()?;
 
     Target::update_status(&ids, status)?;
+    info!("{:?}", args);
 
+    Ok(())
+}
+
+/// 根据关键词，查找包含关键字的所有任务
+/// 关键词可以是任务名称、任务描述、任务分组
+pub fn command_find(args: &[&str]) -> Result<(), Box<dyn Error>> {
+    if args.len() < 2 {
+        return Err("请输入要查找的关键词".into());
+    }
+    let keyword = args[1];
+
+    Target::find(keyword)?;
+    info!("{:?}", args);
+
+    Ok(())
+}
+
+pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
+    let mut table = Table::new();
+    table
+        .load_preset(UTF8_FULL_F)
+        .set_content_arrangement(ContentArrangement::Dynamic);
+
+    table.set_header(vec![
+        "任务ID",
+        "任务名称",
+        "任务描述",
+        "截至日期",
+        "状态",
+        "分组",
+        "级别",
+    ]);
+
+    for task in tasks {
+        table.add_row(vec![
+            task.id.map_or(0.to_string(), |v| v.to_string()),
+            task.target_name.clone(),
+            task.description.as_deref().map_or("无", |s| s).to_string(),
+            task.deadline.format("%Y-%m-%d").to_string(),
+            task.target_status.to_string(),
+            task.group.as_deref().map_or("无", |s| s).to_string(),
+            task.level.to_string(),
+        ]);
+    }
+
+    table
+        .column_mut(2)
+        .unwrap()
+        .set_constraint(ColumnConstraint::Absolute(Width::Fixed(20)));
+
+    println!("{table}");
     Ok(())
 }
