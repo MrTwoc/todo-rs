@@ -50,9 +50,9 @@ https://rust-book.junmajinlong.com/ch102/tracing.html
     任务id用空格隔开，例：\
     'status [Pause|Active|Done|Cancel|OutTime] [id]'\
     'del [id]'
-- 完成记录\
+- ✅ 完成记录\
     每个任务完成后，会记录下完成时间
-- 日志记录\
+- ✅ 日志记录\
     每次操作都会被动的记录下操作时间、操作类型、操作内容\
     同时记录下当时所占内存、cpu占用率\
     格式：\
