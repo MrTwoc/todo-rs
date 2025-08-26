@@ -6,7 +6,7 @@ use chrono::NaiveDate;
 use crate::{
     cmd::{show_table, validate_and_parse_date},
     storage::TaskStorage,
-    task_module::{Target, TargetStatus, TaskLevel},
+    task_module::{Target, TargetStatus},
 };
 
 // 将原来的UTF8_FULL中的双横线改为单横线,以下是样例
@@ -38,7 +38,8 @@ impl Target {
             target_status: TargetStatus::default(),
             description,
             group,
-            level: TaskLevel::Normal,
+            // level: TaskLevel::Normal,
+            task_value: 0,
         });
 
         TaskStorage::save(&tasks)?;
@@ -114,16 +115,17 @@ impl Target {
                 "deadline" => task.deadline = validate_and_parse_date(value)?,
                 "description" => task.description = Some(value.to_string()),
                 "group" => task.group = Some(value.to_string()),
-                "level" => {
-                    task.level = match value.to_lowercase().as_str() {
-                        "low" => TaskLevel::Low,
-                        "normal" => TaskLevel::Normal,
-                        "medium" => TaskLevel::Medium,
-                        "high" => TaskLevel::High,
-                        _ => {
-                            return Err(format!("不支持的任务级别: {}", value).into());
-                        }
-                    }
+                "value" => {
+                    // task.level = match value.to_lowercase().as_str() {
+                    //     "low" => TaskLevel::Low,
+                    //     "normal" => TaskLevel::Normal,
+                    //     "medium" => TaskLevel::Medium,
+                    //     "high" => TaskLevel::High,
+                    //     _ => {
+                    //         return Err(format!("不支持的任务级别: {}", value).into());
+                    //     }
+                    // }
+                    task.task_value = value.parse().unwrap_or(0);
                 }
                 _ => return Err(format!("不支持的字段: {}", field).into()),
             }

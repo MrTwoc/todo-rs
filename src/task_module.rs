@@ -16,45 +16,36 @@ pub struct Target {
     /// 任务分组
     pub group: Option<String>,
     /// 任务级别
-    pub level: TaskLevel,
+    // pub level: TaskLevel,
+
+    /// 任务价值,取代任务级别(0~255)
+    pub task_value: u8,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum TaskLevel {
-    // 或者给任务级别，改成任务价值，例如价值100
-    /// 低
-    Low,
-    /// 一般
-    Normal,
-    /// 中等
-    Medium,
-    /// 重要
-    High,
-    // 把任务级别改为价值后，把[秘密|机密|绝密]变成隐藏类型
-}
+// #[derive(Debug, Clone, Serialize, Deserialize)]
+// pub enum TaskLevel {
+//     // 或者给任务级别，改成任务价值，例如价值100
+//     /// 低
+//     Low,
+//     /// 一般
+//     Normal,
+//     /// 中等
+//     Medium,
+//     /// 重要
+//     High,
+//     // 把任务级别改为价值后，把[秘密|机密|绝密]变成隐藏类型
+// }
 
-impl std::str::FromStr for TaskLevel {
-    type Err = String;
+// impl std::str::FromStr for TaskLevel {
+//     type Err = String;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Normal" | "一般" => Ok(TaskLevel::Normal),
-            "Medium" | "中等" => Ok(TaskLevel::Medium),
-            "High" | "重要" => Ok(TaskLevel::High),
-            _ => Err(format!("无效的任务级别: {}", s)),
-        }
-    }
-}
-
-// impl std::fmt::Display for TaskLevel {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         let s = match self {
-//             TaskLevel::Low => "低",
-//             TaskLevel::Normal => "正常",
-//             TaskLevel::Medium => "中",
-//             TaskLevel::High => "高",
-//         };
-//         write!(f, "{s}")
+//     fn from_str(s: &str) -> Result<Self, Self::Err> {
+//         match s {
+//             "Normal" | "一般" => Ok(TaskLevel::Normal),
+//             "Medium" | "中等" => Ok(TaskLevel::Medium),
+//             "High" | "重要" => Ok(TaskLevel::High),
+//             _ => Err(format!("无效的任务级别: {}", s)),
+//         }
 //     }
 // }
 
@@ -86,14 +77,14 @@ impl std::fmt::Display for TargetStatus {
     }
 }
 
-impl std::fmt::Display for TaskLevel {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            TaskLevel::Low => "低",
-            TaskLevel::Normal => "正常",
-            TaskLevel::Medium => "中",
-            TaskLevel::High => "高",
-        };
-        write!(f, "{s}")
-    }
-}
+// impl std::fmt::Display for TaskLevel {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         let s = match self {
+//             TaskLevel::Low => "低",
+//             TaskLevel::Normal => "正常",
+//             TaskLevel::Medium => "中",
+//             TaskLevel::High => "高",
+//         };
+//         write!(f, "{s}")
+//     }
+// }
