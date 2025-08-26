@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 // use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 
 use crate::{
-    cmd::{show_table, validate_and_parse_date},
+    cmd::{show_table, show_table2, validate_and_parse_date},
     storage::TaskStorage,
     task_module::{Target, TargetStatus},
 };
@@ -79,7 +79,9 @@ impl Target {
 
     pub fn list() -> Result<(), Box<dyn Error>> {
         let tasks = TaskStorage::read()?;
-        show_table(&tasks)
+        // show_table(&tasks)?;
+        show_table2(&tasks)?;
+        Ok(())
     }
 
     pub fn find_by_id(_id: u32) -> Result<(), Box<dyn Error>> {

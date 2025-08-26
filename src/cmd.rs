@@ -4,8 +4,13 @@ use std::result::Result;
 use crate::task_module::*;
 use chrono::NaiveDate;
 use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
+use owo_colors::*;
 use std::error::Error;
+use textwrap::wrap;
 use tracing::info;
+
+use owo_colors::OwoColorize;
+use unicode_width::UnicodeWidthStr;
 
 /*
     负责处理指令
@@ -208,5 +213,161 @@ pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
         .set_constraint(ColumnConstraint::Absolute(Width::Fixed(20)));
 
     println!("{table}");
+    Ok(())
+}
+
+/// 计算带颜色文本的显示宽度（忽略ANSI转义序列）
+fn colored_text_width(text: &str) -> usize {
+    // 移除ANSI颜色转义序列
+    let re = regex::Regex::new(r"\x1B\[([0-9]{1,3}(;[0-9]{1,3})*)?[mGK]").unwrap();
+    let cleaned = re.replace_all(text, "");
+    cleaned.width()
+}
+
+/// 带颜色的文本左对齐
+fn colored_left_pad(text: String, width: usize) -> String {
+    let current_width = colored_text_width(&text);
+    if current_width < width {
+        format!("{}{}", text, " ".repeat(width - current_width))
+    } else {
+        text
+    }
+}
+
+// pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
+//     // 打印带颜色的表头
+//     println!(
+//         "{:<3} | {:<15} | {:<30} | {:<10} | {:<12} | {:<15} | {:<10}",
+//         "ID".on_blue().bold(),
+//         "Target".on_green().bold(),
+//         "Description".on_cyan().bold(),
+//         "Deadline".on_yellow().bold(),
+//         "Status".on_purple().bold(),
+//         "Group".on_magenta().bold(),
+//         "Value".on_red().bold()
+//     );
+
+//     for task in tasks {
+//         // 根据任务状态设置不同颜色
+//         let status_str = task.target_status.to_string();
+//         let status_color = match status_str.as_str() {
+//             "done" => status_str.green().to_string(),
+//             "pause" => status_str.yellow().to_string(),
+//             "cancel" => status_str.red().to_string(),
+//             "outtime" => status_str.red().to_string(),
+//             "active" => status_str.green().to_string(),
+//             "todo" => status_str.red().to_string(),
+//             _ => status_str,
+//         };
+
+//         println!(
+//             "{:<3} | {:<15} | {:<30} | {:<10} | {:<12} | {:<15} | {:<10}",
+//             task.id.unwrap().to_string().blue().bold(),
+//             task.target_name.green(),
+//             task.description.as_deref().unwrap_or("无").cyan(),
+//             task.deadline.format("%Y-%m-%d").to_string().yellow(),
+//             status_color,
+//             task.group.as_deref().unwrap_or("无").magenta(),
+//             task.task_value.to_string().red()
+//         );
+//     }
+
+//     Ok(())
+// }
+
+pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
+    // ... existing code ...
+    // 打印带颜色的表头（使用新的对齐函数）
+    println!(
+        "{} | {} | {} | {} | {} | {} | {}",
+        colored_left_pad("ID".on_blue().bold().to_string(), 3),
+        colored_left_pad("Target".on_green().bold().to_string(), 15),
+        colored_left_pad("Description".on_cyan().bold().to_string(), 30),
+        colored_left_pad("Deadline".on_yellow().bold().to_string(), 10),
+        colored_left_pad("Status".on_purple().bold().to_string(), 10),
+        colored_left_pad("Group".on_magenta().bold().to_string(), 10),
+        colored_left_pad("Value".on_red().bold().to_string(), 10)
+    );
+
+    for task in tasks {
+        // 处理任务描述自动换行
+        let desc_str = task.description.as_deref().unwrap_or("无");
+        let wrapped_desc = wrap(desc_str, 30);
+        let id_str = task.id.unwrap().to_string().blue().bold().to_string();
+        let target_name = task.target_name.green().to_string();
+        let deadline_str = task
+            .deadline
+            .format("%Y-%m-%d")
+            .to_string()
+            .yellow()
+            .to_string();
+        let status_str = task.target_status.to_string();
+        let status_color = match status_str.as_str() {
+            "done" => status_str.green().to_string(),
+            "pause" => status_str.yellow().to_string(),
+            "cancel" => status_str.red().to_string(),
+            "outtime" => status_str.red().to_string(),
+            "active" => status_str.green().to_string(),
+            "todo" => status_str.red().to_string(),
+            _ => status_str,
+        };
+        let group_str = task.group.as_deref().unwrap_or("无").magenta().to_string();
+        let value_str = task.task_value.to_string().red().to_string();
+        // 输出多行描述的表格行（使用新的对齐函数）
+        for (i, desc_line) in wrapped_desc.iter().enumerate() {
+            println!(
+                "{} | {} | {} | {} | {} | {} | {}",
+                colored_left_pad(
+                    if i == 0 {
+                        id_str.clone()
+                    } else {
+                        String::new()
+                    },
+                    3
+                ),
+                colored_left_pad(
+                    if i == 0 {
+                        target_name.clone()
+                    } else {
+                        String::new()
+                    },
+                    15
+                ),
+                colored_left_pad(desc_line.cyan().to_string(), 30),
+                colored_left_pad(
+                    if i == 0 {
+                        deadline_str.clone()
+                    } else {
+                        String::new()
+                    },
+                    10
+                ),
+                colored_left_pad(
+                    if i == 0 {
+                        status_color.clone()
+                    } else {
+                        String::new()
+                    },
+                    10
+                ),
+                colored_left_pad(
+                    if i == 0 {
+                        group_str.clone()
+                    } else {
+                        String::new()
+                    },
+                    10
+                ),
+                colored_left_pad(
+                    if i == 0 {
+                        value_str.clone()
+                    } else {
+                        String::new()
+                    },
+                    10
+                )
+            );
+        }
+    }
     Ok(())
 }
