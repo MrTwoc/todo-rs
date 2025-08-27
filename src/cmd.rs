@@ -276,7 +276,6 @@ fn colored_left_pad(text: String, width: usize) -> String {
 // }
 
 pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
-    // ... existing code ...
     // 打印带颜色的表头（使用新的对齐函数）
     println!(
         "{} | {} | {} | {} | {} | {} | {}",
