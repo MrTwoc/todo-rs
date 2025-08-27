@@ -3,8 +3,8 @@ use std::result::Result;
 
 use crate::task_module::*;
 use chrono::NaiveDate;
-use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
-use owo_colors::*;
+// use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
+// use owo_colors::*;
 use std::error::Error;
 use textwrap::wrap;
 use tracing::info;
@@ -178,43 +178,43 @@ pub fn command_find(args: &[&str]) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
-    let mut table = Table::new();
-    table
-        .load_preset(UTF8_FULL_F)
-        .set_content_arrangement(ContentArrangement::Dynamic);
+// pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
+//     let mut table = Table::new();
+//     table
+//         .load_preset(UTF8_FULL_F)
+//         .set_content_arrangement(ContentArrangement::Dynamic);
 
-    table.set_header(vec![
-        "任务ID",
-        "任务名称",
-        "任务描述",
-        "截至日期",
-        "状态",
-        "分组",
-        "价值",
-    ]);
+//     table.set_header(vec![
+//         "任务ID",
+//         "任务名称",
+//         "任务描述",
+//         "截至日期",
+//         "状态",
+//         "分组",
+//         "价值",
+//     ]);
 
-    for task in tasks {
-        table.add_row(vec![
-            task.id.map_or(0.to_string(), |v| v.to_string()),
-            task.target_name.clone(),
-            task.description.as_deref().map_or("无", |s| s).to_string(),
-            task.deadline.format("%Y-%m-%d").to_string(),
-            task.target_status.to_string(),
-            task.group.as_deref().map_or("无", |s| s).to_string(),
-            // task.level.to_string(),
-            task.task_value.to_string(),
-        ]);
-    }
+//     for task in tasks {
+//         table.add_row(vec![
+//             task.id.map_or(0.to_string(), |v| v.to_string()),
+//             task.target_name.clone(),
+//             task.description.as_deref().map_or("无", |s| s).to_string(),
+//             task.deadline.format("%Y-%m-%d").to_string(),
+//             task.target_status.to_string(),
+//             task.group.as_deref().map_or("无", |s| s).to_string(),
+//             // task.level.to_string(),
+//             task.task_value.to_string(),
+//         ]);
+//     }
 
-    table
-        .column_mut(2)
-        .unwrap()
-        .set_constraint(ColumnConstraint::Absolute(Width::Fixed(20)));
+//     table
+//         .column_mut(2)
+//         .unwrap()
+//         .set_constraint(ColumnConstraint::Absolute(Width::Fixed(20)));
 
-    println!("{table}");
-    Ok(())
-}
+//     println!("{table}");
+//     Ok(())
+// }
 
 /// 计算带颜色文本的显示宽度（忽略ANSI转义序列）
 fn colored_text_width(text: &str) -> usize {

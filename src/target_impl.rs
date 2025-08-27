@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 // use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 
 use crate::{
-    cmd::{show_table, show_table2, validate_and_parse_date},
+    cmd::{show_table2, validate_and_parse_date},
     storage::TaskStorage,
     task_module::{Target, TargetStatus},
 };
@@ -174,6 +174,6 @@ impl Target {
         }
 
         // 调用表格函数，打印任务
-        show_table(&filtered_tasks)
+        show_table2(&filtered_tasks)
     }
 }
