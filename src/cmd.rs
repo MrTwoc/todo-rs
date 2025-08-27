@@ -178,44 +178,6 @@ pub fn command_find(args: &[&str]) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
-//     let mut table = Table::new();
-//     table
-//         .load_preset(UTF8_FULL_F)
-//         .set_content_arrangement(ContentArrangement::Dynamic);
-
-//     table.set_header(vec![
-//         "任务ID",
-//         "任务名称",
-//         "任务描述",
-//         "截至日期",
-//         "状态",
-//         "分组",
-//         "价值",
-//     ]);
-
-//     for task in tasks {
-//         table.add_row(vec![
-//             task.id.map_or(0.to_string(), |v| v.to_string()),
-//             task.target_name.clone(),
-//             task.description.as_deref().map_or("无", |s| s).to_string(),
-//             task.deadline.format("%Y-%m-%d").to_string(),
-//             task.target_status.to_string(),
-//             task.group.as_deref().map_or("无", |s| s).to_string(),
-//             // task.level.to_string(),
-//             task.task_value.to_string(),
-//         ]);
-//     }
-
-//     table
-//         .column_mut(2)
-//         .unwrap()
-//         .set_constraint(ColumnConstraint::Absolute(Width::Fixed(20)));
-
-//     println!("{table}");
-//     Ok(())
-// }
-
 /// 计算带颜色文本的显示宽度（忽略ANSI转义序列）
 fn colored_text_width(text: &str) -> usize {
     // 移除ANSI颜色转义序列
@@ -234,58 +196,66 @@ fn colored_left_pad(text: String, width: usize) -> String {
     }
 }
 
-// pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
-//     // 打印带颜色的表头
-//     println!(
-//         "{:<3} | {:<15} | {:<30} | {:<10} | {:<12} | {:<15} | {:<10}",
-//         "ID".on_blue().bold(),
-//         "Target".on_green().bold(),
-//         "Description".on_cyan().bold(),
-//         "Deadline".on_yellow().bold(),
-//         "Status".on_purple().bold(),
-//         "Group".on_magenta().bold(),
-//         "Value".on_red().bold()
-//     );
-
-//     for task in tasks {
-//         // 根据任务状态设置不同颜色
-//         let status_str = task.target_status.to_string();
-//         let status_color = match status_str.as_str() {
-//             "done" => status_str.green().to_string(),
-//             "pause" => status_str.yellow().to_string(),
-//             "cancel" => status_str.red().to_string(),
-//             "outtime" => status_str.red().to_string(),
-//             "active" => status_str.green().to_string(),
-//             "todo" => status_str.red().to_string(),
-//             _ => status_str,
-//         };
-
-//         println!(
-//             "{:<3} | {:<15} | {:<30} | {:<10} | {:<12} | {:<15} | {:<10}",
-//             task.id.unwrap().to_string().blue().bold(),
-//             task.target_name.green(),
-//             task.description.as_deref().unwrap_or("无").cyan(),
-//             task.deadline.format("%Y-%m-%d").to_string().yellow(),
-//             status_color,
-//             task.group.as_deref().unwrap_or("无").magenta(),
-//             task.task_value.to_string().red()
-//         );
-//     }
-
-//     Ok(())
-// }
-
 pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
-    // 打印带颜色的表头（使用新的对齐函数）
+    // 修改后的表头代码（所有字段应用完整背景色）
     println!(
-        "{} | {} | {} | {} | {} | {} | {}",
-        colored_left_pad("ID".on_blue().bold().to_string(), 3),
-        colored_left_pad("Target".on_green().bold().to_string(), 15),
-        colored_left_pad("Description".on_cyan().bold().to_string(), 30),
-        colored_left_pad("Deadline".on_yellow().bold().to_string(), 10),
-        colored_left_pad("Status".on_purple().bold().to_string(), 10),
-        colored_left_pad("Group".on_magenta().bold().to_string(), 10),
-        colored_left_pad("Value".on_red().bold().to_string(), 10)
+        " {} {} {} {} {} {} {}",
+        // ID列（蓝色背景）
+        colored_left_pad(
+            colored_left_pad("ID".to_string(), 3)
+                .on_blue()
+                .bold()
+                .to_string(),
+            3
+        ),
+        // Target列（绿色背景）
+        colored_left_pad(
+            colored_left_pad("Target".to_string(), 15)
+                .on_green()
+                .bold()
+                .to_string(),
+            15
+        ),
+        // Description列（青色背景）
+        colored_left_pad(
+            colored_left_pad("Description".to_string(), 30)
+                .on_cyan()
+                .bold()
+                .to_string(),
+            30
+        ),
+        // Deadline列（黄色背景）
+        colored_left_pad(
+            colored_left_pad("Deadline".to_string(), 10)
+                .on_yellow()
+                .bold()
+                .to_string(),
+            10
+        ),
+        // Status列（紫色背景）
+        colored_left_pad(
+            colored_left_pad("Status".to_string(), 10)
+                .on_purple()
+                .bold()
+                .to_string(),
+            10
+        ),
+        // Group列（品红背景）
+        colored_left_pad(
+            colored_left_pad("Group".to_string(), 10)
+                .on_magenta()
+                .bold()
+                .to_string(),
+            10
+        ),
+        // Value列（红色背景）
+        colored_left_pad(
+            colored_left_pad("Value".to_string(), 10)
+                .on_red()
+                .bold()
+                .to_string(),
+            10
+        )
     );
 
     for task in tasks {
@@ -315,7 +285,7 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
         // 输出多行描述的表格行（使用新的对齐函数）
         for (i, desc_line) in wrapped_desc.iter().enumerate() {
             println!(
-                "{} | {} | {} | {} | {} | {} | {}",
+                " {} {} {} {} {} {} {}",
                 colored_left_pad(
                     if i == 0 {
                         id_str.clone()
