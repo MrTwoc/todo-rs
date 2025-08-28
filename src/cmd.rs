@@ -3,6 +3,7 @@ use std::result::Result;
 
 use crate::task_module::*;
 use chrono::NaiveDate;
+use rayon::iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator};
 // use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 // use owo_colors::*;
 use std::error::Error;
@@ -16,7 +17,7 @@ use unicode_width::UnicodeWidthStr;
     负责处理指令
 */
 
-pub const UTF8_FULL_F: &str = "││──╞─┼╡┆╌┼├┤┬┴┌┐└┘";
+// pub const UTF8_FULL_F: &str = "││──╞─┼╡┆╌┼├┤┬┴┌┐└┘";
 /*
 ┌────────┬──────────┬───────────────────────────────────┬────────────┬───────────┬──────┬──────┐
 │ 任务ID ┆ 任务名称 ┆ 任务描述                          ┆ 截至日期   ┆ 状态      ┆ 分组 ┆ 级别 │
@@ -34,8 +35,8 @@ pub fn command_sysinfo() -> Result<(), Box<dyn Error>> {
     if let Some(process) = sys.process(sysinfo::Pid::from(std::process::id() as usize)) {
         println!(
             "内存使用 > {} MB\nCPU使用率 > {:.1}%",
-            process.memory() / 1024 / 1024,
-            process.cpu_usage()
+            &process.memory() / 1024 / 1024,
+            &process.cpu_usage()
         );
     }
     Ok(())
@@ -46,6 +47,7 @@ pub fn command_clear() {
     if let Err(e) = Command::new("cmd").arg("/c").arg("cls").status() {
         eprintln!("清空控制台失败: {}", e);
     }
+    info!("clear");
 }
 
 pub fn validate_and_parse_date(date_str: &str) -> Result<NaiveDate, Box<dyn Error>> {
@@ -75,7 +77,7 @@ pub fn command_add(args: &[&str]) -> Result<(), Box<dyn Error>> {
         args.get(3).map(|s| s.to_string()),
         args.get(4).map(|s| s.to_string()),
     )?;
-    info!("{:?}", args);
+    info!("{:?}", &args);
 
     Ok(())
 }
@@ -113,19 +115,13 @@ value(任务价值): 0~255
         return Ok(());
     }
     Target::edit(args)?;
-    info!("{:?}", args);
+    info!("{:?}", &args);
 
     Ok(())
 }
 pub fn command_del(args: &[&str]) -> Result<(), Box<dyn Error>> {
     // 判断args是否为空
     if args.len() < 2 {
-        //         eprintln!(
-        //             "执行失败: 指令参数不足
-        // 请输入: del <任务ID>
-        // 例如: del 1"
-        //         );
-        //         return Ok(());
         return Err("请输入要删除的任务ID，多个ID用空格分隔".into());
     }
     // let id = args.get(1).ok_or("缺少任务ID")?.parse::<u32>()?;
@@ -135,7 +131,7 @@ pub fn command_del(args: &[&str]) -> Result<(), Box<dyn Error>> {
         .collect::<Result<_, _>>()?;
 
     Target::del_many(&ids)?;
-    info!("{:?}", args);
+    info!("{:?}", &args);
 
     Ok(())
 }
@@ -159,7 +155,7 @@ pub fn command_update_status(args: &[&str]) -> Result<(), Box<dyn Error>> {
         .collect::<Result<_, _>>()?;
 
     Target::update_status(&ids, status)?;
-    info!("{:?}", args);
+    info!("{:?}", &args);
 
     Ok(())
 }
@@ -173,7 +169,7 @@ pub fn command_find(args: &[&str]) -> Result<(), Box<dyn Error>> {
     let keyword = args[1];
 
     Target::find(keyword)?;
-    info!("{:?}", args);
+    info!("{:?}", &args);
 
     Ok(())
 }
@@ -187,12 +183,12 @@ fn colored_text_width(text: &str) -> usize {
 }
 
 /// 带颜色的文本左对齐
-fn colored_left_pad(text: String, width: usize) -> String {
-    let current_width = colored_text_width(&text);
+fn colored_left_pad(text: &str, width: usize) -> String {
+    let current_width = colored_text_width(text);
     if current_width < width {
         format!("{}{}", text, " ".repeat(width - current_width))
     } else {
-        text
+        text.to_string()
     }
 }
 
@@ -200,75 +196,82 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
     // 修改后的表头代码（所有字段应用完整背景色）
     println!(
         " {} {} {} {} {} {} {}",
-        // ID列（蓝色背景）
+        // ID列（蓝色背景，白色文字）
         colored_left_pad(
-            colored_left_pad("ID".to_string(), 3)
+            &colored_left_pad("ID", 3)
                 .on_blue()
+                .white()
                 .bold()
                 .to_string(),
             3
         ),
-        // Target列（绿色背景）
+        // Target列（蓝色背景，白色文字）
         colored_left_pad(
-            colored_left_pad("Target".to_string(), 15)
-                .on_green()
+            &colored_left_pad("Target", 15)
+                .on_blue()
+                .white()
                 .bold()
                 .to_string(),
             15
         ),
-        // Description列（青色背景）
+        // Description列（青色背景，黑色文字）
         colored_left_pad(
-            colored_left_pad("Description".to_string(), 30)
+            &colored_left_pad("Description", 30)
                 .on_cyan()
+                .white()
                 .bold()
                 .to_string(),
             30
         ),
-        // Deadline列（黄色背景）
+        // Deadline列（黄色背景，黑色文字）
         colored_left_pad(
-            colored_left_pad("Deadline".to_string(), 10)
+            &colored_left_pad("Deadline", 10)
                 .on_yellow()
+                .black()
                 .bold()
                 .to_string(),
             10
         ),
-        // Status列（紫色背景）
+        // Status列（绿色背景，白色文字）
         colored_left_pad(
-            colored_left_pad("Status".to_string(), 10)
-                .on_purple()
+            &colored_left_pad("Status", 10)
+                .on_green()
+                .white()
                 .bold()
                 .to_string(),
             10
         ),
-        // Group列（品红背景）
+        // Group列（magenta背景，白色文字）
         colored_left_pad(
-            colored_left_pad("Group".to_string(), 10)
+            &colored_left_pad("Group", 10)
                 .on_magenta()
+                .white()
                 .bold()
                 .to_string(),
             10
         ),
-        // Value列（红色背景）
+        // Value列（红色背景，白色文字）
         colored_left_pad(
-            colored_left_pad("Value".to_string(), 10)
+            &colored_left_pad("Value", 10)
                 .on_red()
+                .white()
                 .bold()
                 .to_string(),
             10
         )
     );
 
-    for task in tasks {
+    tasks.par_iter().for_each(|task| {
         // 处理任务描述自动换行
         let desc_str = task.description.as_deref().unwrap_or("无");
         let wrapped_desc = wrap(desc_str, 30);
-        let id_str = task.id.unwrap().to_string().blue().bold().to_string();
-        let target_name = task.target_name.green().to_string();
+        let id_str = task.id.unwrap().to_string().white().bold().to_string();
+        let target_name = task.target_name.white().to_string();
         let deadline_str = task
             .deadline
             .format("%Y-%m-%d")
             .to_string()
-            .yellow()
+            .white()
             .to_string();
         let status_str = task.target_status.to_string();
         let status_color = match status_str.as_str() {
@@ -280,63 +283,21 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
             "todo" => status_str.red().to_string(),
             _ => status_str,
         };
-        let group_str = task.group.as_deref().unwrap_or("无").magenta().to_string();
-        let value_str = task.task_value.to_string().red().to_string();
+        let group_str = task.group.as_deref().unwrap_or("无").white().to_string();
+        let value_str = task.task_value.to_string().white().to_string();
         // 输出多行描述的表格行（使用新的对齐函数）
         for (i, desc_line) in wrapped_desc.iter().enumerate() {
             println!(
                 " {} {} {} {} {} {} {}",
-                colored_left_pad(
-                    if i == 0 {
-                        id_str.clone()
-                    } else {
-                        String::new()
-                    },
-                    3
-                ),
-                colored_left_pad(
-                    if i == 0 {
-                        target_name.clone()
-                    } else {
-                        String::new()
-                    },
-                    15
-                ),
-                colored_left_pad(desc_line.cyan().to_string(), 30),
-                colored_left_pad(
-                    if i == 0 {
-                        deadline_str.clone()
-                    } else {
-                        String::new()
-                    },
-                    10
-                ),
-                colored_left_pad(
-                    if i == 0 {
-                        status_color.clone()
-                    } else {
-                        String::new()
-                    },
-                    10
-                ),
-                colored_left_pad(
-                    if i == 0 {
-                        group_str.clone()
-                    } else {
-                        String::new()
-                    },
-                    10
-                ),
-                colored_left_pad(
-                    if i == 0 {
-                        value_str.clone()
-                    } else {
-                        String::new()
-                    },
-                    10
-                )
+                colored_left_pad(if i == 0 { &id_str } else { "" }, 3),
+                colored_left_pad(if i == 0 { &target_name } else { "" }, 15),
+                colored_left_pad(&desc_line.white().to_string(), 30),
+                colored_left_pad(if i == 0 { &deadline_str } else { "" }, 10),
+                colored_left_pad(if i == 0 { &status_color } else { "" }, 10),
+                colored_left_pad(if i == 0 { &group_str } else { "" }, 10),
+                colored_left_pad(if i == 0 { &value_str } else { "" }, 10)
             );
         }
-    }
+    });
     Ok(())
 }

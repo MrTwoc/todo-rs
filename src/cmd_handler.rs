@@ -1,7 +1,7 @@
 use crate::{about, cmd::*};
 use owo_colors::OwoColorize;
 use std::time::Instant;
-use tracing::error;
+use tracing::{error, info};
 
 /*
     负责指令分发、处理第一级指令
@@ -41,7 +41,8 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     let duration = start.elapsed();
-    println!("耗时: {}µs", duration.as_micros());
+    println!("耗时: {}µs", &duration.as_micros());
+    info!("耗时: {}µs", &duration.as_micros());
 
     Ok(())
 }

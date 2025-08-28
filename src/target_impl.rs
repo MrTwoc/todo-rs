@@ -162,8 +162,8 @@ impl Target {
             .iter()
             .filter(|t| {
                 contains_keyword(&t.target_name) // 匹配任务名称
-                || t.description.as_deref().map_or(false, contains_keyword)
-                || t.group.as_deref().map_or(false, contains_keyword)
+                || t.description.as_deref().is_some_and(contains_keyword)
+                || t.group.as_deref().is_some_and(contains_keyword)
             })
             .cloned()
             .collect::<Vec<_>>();
