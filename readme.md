@@ -12,7 +12,9 @@ https://crates.io/crates/comfy-table  \
 将终端搬入浏览器  \
 https://zellij.dev/news/web-client-multiple-pane-actions/  \
 Tracing简要使用\
-https://rust-book.junmajinlong.com/ch102/tracing.html
+https://rust-book.junmajinlong.com/ch102/tracing.html\
+应用进入后台运行
+https://github.com/tauri-apps/tray-icon
 
 #### 简易展示
 ![alt text](image.png)
@@ -56,6 +58,12 @@ https://rust-book.junmajinlong.com/ch102/tracing.html
     每次操作都会被动的记录下操作时间、操作类型、操作内容\
     格式：\
     [info]时间戳:用户指令\
+- 用户登陆、注册、管理\
+    可以添加用户，每个用户有自己的任务列表\
+    角色管理(admin/user)。或者特征码功能：
+    只需输入特征码即可识别用户身份，无需账号密码
+- 删除状态：\
+    删除任务时，不删除任务，只标记为无效
 
 #### 项目优化
 删除任务时不对任务ID进行重新排序\

@@ -8,6 +8,7 @@ use crate::{
     storage::TaskStorage,
     task_module::{Target, TargetStatus},
 };
+use rayon::prelude::*;
 
 // 将原来的UTF8_FULL中的双横线改为单横线,以下是样例
 // pub const UTF8_FULL_F: &str = "││──╞─┼╡┆╌┼├┤┬┴┌┐└┘";
@@ -84,13 +85,6 @@ impl Target {
         Ok(())
     }
 
-    pub fn find_by_id(_id: u32) -> Result<(), Box<dyn Error>> {
-        Ok(())
-    }
-    pub fn find_by_name(_name: &str) -> Result<(), Box<dyn Error>> {
-        Ok(())
-    }
-
     pub fn edit(args: &[&str]) -> Result<(), Box<dyn Error>> {
         let id: u32 = args[1]
             .parse()
@@ -140,11 +134,11 @@ impl Target {
 
     pub fn update_status(ids: &[u32], status: TargetStatus) -> Result<(), Box<dyn Error>> {
         let mut tasks = TaskStorage::read()?;
-        for task in tasks.iter_mut() {
+        tasks.par_iter_mut().for_each(|task| {
             if ids.contains(&task.id.unwrap_or(0)) {
                 task.target_status = status.clone();
             }
-        }
+        });
         TaskStorage::save(&tasks)?;
         println!("成功修改");
 
@@ -159,7 +153,7 @@ impl Target {
         let contains_keyword = |s: &str| s.to_lowercase().contains(&keyword_lower);
 
         let filtered_tasks = tasks
-            .iter()
+            .par_iter()
             .filter(|t| {
                 contains_keyword(&t.target_name) // 匹配任务名称
                 || t.description.as_deref().is_some_and(contains_keyword)
