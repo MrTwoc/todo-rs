@@ -68,7 +68,7 @@ impl std::fmt::Display for TargetStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             TargetStatus::Pause => "⏸️ 暂停中",
-            TargetStatus::Active => "🗓️ 进行中",
+            TargetStatus::Active => "🟩 进行中",
             TargetStatus::Done => "✅ 已完成",
             TargetStatus::Cancel => "❌ 已取消",
             TargetStatus::OutTime => "⏳ 已过期",
