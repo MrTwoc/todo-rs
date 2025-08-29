@@ -3,7 +3,8 @@ use std::result::Result;
 
 use crate::task_module::*;
 use chrono::NaiveDate;
-use rayon::iter::{IndexedParallelIterator, IntoParallelRefIterator, ParallelIterator};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+use regex::Regex;
 // use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 // use owo_colors::*;
 use std::error::Error;
@@ -174,10 +175,11 @@ pub fn command_find(args: &[&str]) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+const REGEX_COLOR: &str = r"\x1B\[([0-9]{1,3}(;[0-9]{1,3})*)?[mGK]";
 /// 计算带颜色文本的显示宽度（忽略ANSI转义序列）
 fn colored_text_width(text: &str) -> usize {
     // 移除ANSI颜色转义序列
-    let re = regex::Regex::new(r"\x1B\[([0-9]{1,3}(;[0-9]{1,3})*)?[mGK]").unwrap();
+    let re = Regex::new(REGEX_COLOR).unwrap();
     let cleaned = re.replace_all(text, "");
     cleaned.width()
 }
@@ -193,10 +195,9 @@ fn colored_left_pad(text: &str, width: usize) -> String {
 }
 
 pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
-    // 修改后的表头代码（所有字段应用完整背景色）
+    // 表头渲染
     println!(
         " {} {} {} {} {} {} {}",
-        // ID列（蓝色背景，白色文字）
         colored_left_pad(
             &colored_left_pad("ID", 3)
                 .on_blue()
@@ -205,7 +206,6 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
                 .to_string(),
             3
         ),
-        // Target列（蓝色背景，白色文字）
         colored_left_pad(
             &colored_left_pad("Target", 15)
                 .on_blue()
@@ -214,7 +214,6 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
                 .to_string(),
             15
         ),
-        // Description列（青色背景，黑色文字）
         colored_left_pad(
             &colored_left_pad("Description", 30)
                 .on_cyan()
@@ -223,7 +222,6 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
                 .to_string(),
             30
         ),
-        // Deadline列（黄色背景，黑色文字）
         colored_left_pad(
             &colored_left_pad("Deadline", 10)
                 .on_yellow()
@@ -232,7 +230,6 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
                 .to_string(),
             10
         ),
-        // Status列（绿色背景，白色文字）
         colored_left_pad(
             &colored_left_pad("Status", 10)
                 .on_green()
@@ -241,7 +238,6 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
                 .to_string(),
             10
         ),
-        // Group列（magenta背景，白色文字）
         colored_left_pad(
             &colored_left_pad("Group", 10)
                 .on_magenta()
@@ -250,7 +246,6 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
                 .to_string(),
             10
         ),
-        // Value列（红色背景，白色文字）
         colored_left_pad(
             &colored_left_pad("Value", 10)
                 .on_red()
@@ -262,40 +257,48 @@ pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
     );
 
     tasks.par_iter().for_each(|task| {
-        // 处理任务描述自动换行
         let desc_str = task.description.as_deref().unwrap_or("无");
         let wrapped_desc = wrap(desc_str, 30);
-        let id_str = task.id.unwrap().to_string().white().bold().to_string();
-        let target_name = task.target_name.white().to_string();
-        let deadline_str = task
-            .deadline
-            .format("%Y-%m-%d")
-            .to_string()
-            .white()
-            .to_string();
+        let id_str = task.id.unwrap().to_string();
+        let target_name = task.target_name.to_string();
+        let deadline_str = task.deadline.format("%Y-%m-%d").to_string();
         let status_str = task.target_status.to_string();
-        let status_color = match status_str.as_str() {
-            "done" => status_str.green().to_string(),
-            "pause" => status_str.yellow().to_string(),
-            "cancel" => status_str.red().to_string(),
-            "outtime" => status_str.red().to_string(),
-            "active" => status_str.green().to_string(),
-            "todo" => status_str.red().to_string(),
-            _ => status_str,
-        };
-        let group_str = task.group.as_deref().unwrap_or("无").white().to_string();
-        let value_str = task.task_value.to_string().white().to_string();
-        // 输出多行描述的表格行（使用新的对齐函数）
-        for (i, desc_line) in wrapped_desc.iter().enumerate() {
+        let group_str = task.group.as_deref().unwrap_or("无").to_string();
+        let value_str = task.task_value.to_string();
+
+        // 预计算首行固定内容
+        let id_padded = colored_left_pad(&id_str, 3);
+        let name_padded = colored_left_pad(&target_name, 15);
+        let deadline_padded = colored_left_pad(&deadline_str, 10);
+        let status_padded = colored_left_pad(&status_str, 10);
+        let group_padded = colored_left_pad(&group_str, 10);
+        let value_padded = colored_left_pad(&value_str, 10);
+
+        // 处理首行
+        if let Some(first_desc) = wrapped_desc.first() {
             println!(
                 " {} {} {} {} {} {} {}",
-                colored_left_pad(if i == 0 { &id_str } else { "" }, 3),
-                colored_left_pad(if i == 0 { &target_name } else { "" }, 15),
-                colored_left_pad(&desc_line.white().to_string(), 30),
-                colored_left_pad(if i == 0 { &deadline_str } else { "" }, 10),
-                colored_left_pad(if i == 0 { &status_color } else { "" }, 10),
-                colored_left_pad(if i == 0 { &group_str } else { "" }, 10),
-                colored_left_pad(if i == 0 { &value_str } else { "" }, 10)
+                id_padded,
+                name_padded,
+                colored_left_pad(&first_desc.white().to_string(), 30),
+                deadline_padded,
+                status_padded,
+                group_padded,
+                value_padded
+            );
+        }
+
+        // 处理剩余描述行
+        for desc_line in wrapped_desc.iter().skip(1) {
+            println!(
+                " {} {} {} {} {} {} {}",
+                "   ",             // ID列空白占位
+                "               ", // 名称列空白占位
+                colored_left_pad(&desc_line.to_string(), 30),
+                "          ", // 日期列空白占位
+                "          ", // 状态列空白占位
+                "          ", // 分组列空白占位
+                "          "  // 价值列空白占位
             );
         }
     });

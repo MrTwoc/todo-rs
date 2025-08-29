@@ -1,6 +1,7 @@
 pub mod about;
 pub mod cmd;
 pub mod cmd_handler;
+pub mod logger;
 pub mod storage;
 pub mod target_impl;
 pub mod task_module;
