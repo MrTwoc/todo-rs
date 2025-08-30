@@ -5,3 +5,4 @@ pub mod logger;
 pub mod storage;
 pub mod target_impl;
 pub mod task_module;
+pub mod user;

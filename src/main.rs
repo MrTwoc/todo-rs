@@ -1,13 +1,16 @@
 use std::io::{self, Write};
 
 use owo_colors::OwoColorize;
-use todo_rs::{about, cmd_handler};
+use todo_rs::{about, cmd_handler, user::user};
 use tracing::*;
 // use tracing_subscriber::fmt::writer::MakeWriterExt;
 use todo_rs::logger;
+use user::User;
 
 fn main() {
     logger::init_logger();
+
+    User::init();
 
     // 前期临时用print打印，后期想改为BufWriter，不知道能否进一步降低内存和CPU占用
     println!("{}", &about::PRINT_TITLE.green());
