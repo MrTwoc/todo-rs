@@ -20,6 +20,7 @@ rayon = "1.11.0"
 
 # 防窥密码输入
 # rpassword = "7.4.0"
+# https://crates.io/crates/config
 
 [profile.dev]
 opt-level = 1  # 开发模式基础优化

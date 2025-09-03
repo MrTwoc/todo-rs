@@ -67,11 +67,11 @@ pub enum TargetStatus {
 impl std::fmt::Display for TargetStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            TargetStatus::Pause => "⏸️ 暂停中",
-            TargetStatus::Active => "🟩 进行中",
-            TargetStatus::Done => "✅ 已完成",
-            TargetStatus::Cancel => "❌ 已取消",
-            TargetStatus::OutTime => "⏳ 已过期",
+            TargetStatus::Pause => "⏸️ 暂停",
+            TargetStatus::Active => "🟢 进行",
+            TargetStatus::Done => "✅ 完成",
+            TargetStatus::Cancel => "❌ 取消",
+            TargetStatus::OutTime => "⏳ 过期",
         };
         write!(f, "{s}")
     }

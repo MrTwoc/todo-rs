@@ -5,7 +5,7 @@ use chrono::NaiveDate;
 
 use crate::{
     cmd::{show_table2, validate_and_parse_date},
-    storage::TaskStorage,
+    storage::save_json::TaskStorage,
     task_module::{Target, TargetStatus},
 };
 use rayon::prelude::*;
@@ -44,9 +44,6 @@ impl Target {
         });
 
         TaskStorage::save(&tasks)?;
-        // tasks
-        //     .last()
-        //     .map(|task| println!("添加成功=>\n任务：{:?}", task.target_name));
         if let Some(task) = tasks.last() {
             println!("添加成功=>\n任务：{:?}", task.target_name);
         }
@@ -112,15 +109,6 @@ impl Target {
                 "description" => task.description = Some(value.to_string()),
                 "group" => task.group = Some(value.to_string()),
                 "value" => {
-                    // task.level = match value.to_lowercase().as_str() {
-                    //     "low" => TaskLevel::Low,
-                    //     "normal" => TaskLevel::Normal,
-                    //     "medium" => TaskLevel::Medium,
-                    //     "high" => TaskLevel::High,
-                    //     _ => {
-                    //         return Err(format!("不支持的任务级别: {}", value).into());
-                    //     }
-                    // }
                     task.task_value = value.parse().unwrap_or(0);
                 }
                 _ => return Err(format!("不支持的字段: {}", field).into()),
@@ -168,6 +156,7 @@ impl Target {
         }
 
         // 调用表格函数，打印任务
-        show_table2(&filtered_tasks)
+        show_table2(&filtered_tasks)?;
+        Ok(())
     }
 }
