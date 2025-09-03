@@ -18,9 +18,9 @@ textwrap = "0.16.2"
 regex = "1.11.2"
 rayon = "1.11.0"
 
-# 防窥密码输入
-# rpassword = "7.4.0"
-# https://crates.io/crates/config
+# rpassword = "7.4.0"   遮蔽密码输入
+# config = "0.15.15"    配置文件库
+# rusqlite = "0.37.0"   数据库操作库
 
 [profile.dev]
 opt-level = 1  # 开发模式基础优化

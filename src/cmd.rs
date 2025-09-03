@@ -183,7 +183,7 @@ fn colored_left_pad(text: &str, width: usize) -> String {
     }
 }
 
-pub fn show_table2(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
+pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
     // 表头渲染
     println!(
         " {} {} {} {} {} {} {}",

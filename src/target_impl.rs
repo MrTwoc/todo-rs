@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 // use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 
 use crate::{
-    cmd::{show_table2, validate_and_parse_date},
+    cmd::{show_table, validate_and_parse_date},
     storage::save_json::TaskStorage,
     task_module::{Target, TargetStatus},
 };
@@ -77,8 +77,7 @@ impl Target {
 
     pub fn list() -> Result<(), Box<dyn Error>> {
         let tasks = TaskStorage::read()?;
-        // show_table(&tasks)?;
-        show_table2(&tasks)?;
+        show_table(&tasks)?;
         Ok(())
     }
 
@@ -156,7 +155,7 @@ impl Target {
         }
 
         // 调用表格函数，打印任务
-        show_table2(&filtered_tasks)?;
+        show_table(&filtered_tasks)?;
         Ok(())
     }
 }
