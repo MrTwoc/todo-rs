@@ -3,3 +3,6 @@
 /logs
 .VSCodeCounter
 task.json
+todo
+todo-rs.db
+todo_config.toml
