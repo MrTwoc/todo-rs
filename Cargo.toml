@@ -10,7 +10,7 @@ serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.143"
 # comfy-table = "7.1.4"
 chrono = { version = "0.4.41", features = ["serde"] }
-tracing = "0.1.41"
+tracing = "0.1"
 tracing-appender = "0.2.3"
 tracing-subscriber = { version = "0.3.20" }
 unicode-width = "0.2.1"
@@ -18,9 +18,15 @@ textwrap = "0.16.2"
 regex = "1.11.2"
 rayon = "1.11.0"
 
-# rpassword = "7.4.0"   遮蔽密码输入
-# config = "0.15.15"    配置文件库
-# rusqlite = "0.37.0"   数据库操作库
+
+# 遮蔽密码输入
+# rpassword = "7.4.0"
+# 配置文件库
+config = "0.15.15"
+#    数据库操作库
+rusqlite = { version = "0.37.0", features = ["bundled"] }
+#    存储配置文件
+# toml = "0.9.5"
 
 [profile.dev]
 opt-level = 1  # 开发模式基础优化

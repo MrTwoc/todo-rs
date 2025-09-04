@@ -1,12 +1,14 @@
 use std::io::{self, Write};
 
 use owo_colors::OwoColorize;
-use todo_rs::{about, cmd_handler, init};
+use todo_rs::{cmd_handler, help, logger, todors_init};
 use tracing::*;
 
 fn main() {
-    init::init();
+    let _guard = logger::init_logger();
 
+    todors_init::init();
+    info!("程序启动");
     run();
 }
 
@@ -26,7 +28,7 @@ fn run() {
                 std::process::exit(0);
             }
             "help" => {
-                print!("{}", &about::HELP_INFO);
+                print!("{}", &help::HELP_INFO);
                 info!("input: help");
             }
             _ => {

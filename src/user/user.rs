@@ -6,8 +6,10 @@ use std::{
 /*
     用户信息可以存在数据库中，数据库中存储用户信息，但不存储登录状态
 */
+#[derive(Debug)]
 pub struct User {
     pub id: u8,
+    // 后续可能会增加 UUID
     pub name: String,
     pub password: String,
     /// 用户级别 0:普通用户 1:管理员

@@ -1,9 +1,10 @@
-pub mod about;
 pub mod cmd;
 pub mod cmd_handler;
-pub mod init;
+pub mod config;
+pub mod help;
 pub mod logger;
 pub mod storage;
 pub mod target_impl;
 pub mod task_module;
+pub mod todors_init;
 pub mod user;

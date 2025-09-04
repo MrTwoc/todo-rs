@@ -1,4 +1,4 @@
-use crate::{about, cmd::*};
+use crate::{cmd::*, help, user::user_cmd::command_user};
 use owo_colors::OwoColorize;
 use std::time::Instant;
 use tracing::{error, info};
@@ -32,8 +32,11 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
         "clear" => {
             command_clear();
             // 清空控制台后重新打印标题
-            println!("{}", &about::PRINT_TITLE.green());
-            println!("{}", &about::TITLE_INFO);
+            println!("{}", &help::PRINT_TITLE.green());
+            println!("{}", &help::TITLE_INFO);
+        }
+        "user" => {
+            command_user(&args)?;
         }
         _ => {
             eprintln!("{} > {}", "未知命令".red(), args[0]);

@@ -69,8 +69,8 @@ https://github.com/tauri-apps/tray-icon
     所以借此机会学习一下排序算法。
 - 持久化管理：
     目前使用的是json文件存储任务，
-    计划后续改为数据库存储任务、用户数据。
-    toml存储配置文件、设置文件
+    计划后续改为sqlite存储任务、用户数据。
+    toml存储文件config
 
 
 #### 项目优化

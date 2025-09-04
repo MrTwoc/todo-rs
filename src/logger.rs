@@ -10,10 +10,12 @@ impl FormatTime for LocalTimer {
         write!(w, "{}", Local::now().format("%FT%T%.3f"))
     }
 }
-pub fn init_logger() {
+pub fn init_logger() -> impl Drop {
     // 使用tracing_appender，指定日志的输出目标位置
     // 参考: https://docs.rs/tracing-appender/0.2.0/tracing_appender/
+    // ****
     // 如果不是在main函数中，guard必须返回到main()函数中，否则不输出任何信息到日志文件
+    // ****
     let file_appender = tracing_appender::rolling::daily("./logs", "tracing.log");
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
 
@@ -38,4 +40,5 @@ pub fn init_logger() {
     // info!("tracing-info");
     // warn!("tracing-warn");
     // error!("tracing-error");
+    _guard
 }
