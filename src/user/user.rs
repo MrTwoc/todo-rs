@@ -5,6 +5,10 @@ use std::{
 
 /*
     用户信息可以存在数据库中，数据库中存储用户信息，但不存储登录状态
+    user 指令：
+    user list
+    user old_passwd new_password
+    user add | del | edit | info
 */
 #[derive(Debug)]
 pub struct User {
@@ -14,7 +18,7 @@ pub struct User {
     pub password: String,
     /// 用户级别 0:普通用户 1:管理员
     /// 支持 0~255 级别细分
-    /// 级别权重(可以写入config),用户级别比任务级别高几级，可以直接操作任务
+    /// 级别|干涉权重(可以写入config),用户级别比任务级别高几级，可以直接干涉任务
     pub level: u8,
 }
 #[derive(Debug)]

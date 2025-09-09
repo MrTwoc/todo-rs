@@ -19,14 +19,12 @@ impl User {
                 (),
             )?;
             info!("数据库和用户表创建成功 [1/2]");
-            // 插入测试用户
-            conn.execute(
-                "INSERT INTO user (name, password, level) VALUES (?, ?, ?)",
-                ("admin", "admin", 1),
-            )?;
-            conn.execute(
-                "INSERT INTO user (name, password, level) VALUES (?, ?, ?)",
-                ("user", "user", 0),
+
+            conn.execute_batch(
+                "BEGIN;
+         INSERT INTO user (name, password, level) VALUES (admin, admin, 1);
+         INSERT INTO user (name, password, level) VALUES (user, user, 0);
+         COMMIT;",
             )?;
             info!("测试用户插入成功 [2/2]");
             info!("用户初始化完成");
@@ -53,5 +51,23 @@ impl User {
         }
         println!("{:#?}", users);
         Ok(users)
+    }
+
+    /// 查找指定用户，返回user
+    pub fn find(user: &str) -> Result<User, Box<dyn std::error::Error>> {
+        let conn = get_conn()?;
+        // println!("{:#?}", user);
+        let mut stmt = conn.prepare("SELECT id, name, password, level FROM user WHERE name = ?")?;
+
+        let user = stmt.query_row([user], |row| {
+            Ok(User {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                password: row.get(2)?,
+                level: row.get(3)?,
+            })
+        })?;
+
+        Ok(user)
     }
 }

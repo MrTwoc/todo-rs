@@ -6,3 +6,4 @@ task.json
 todo
 todo-rs.db
 todo_config.toml
+app_config.toml

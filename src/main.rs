@@ -7,7 +7,7 @@ use tracing::*;
 fn main() {
     let _guard = logger::init_logger();
 
-    todors_init::init();
+    let _ = todors_init::init();
     info!("程序启动");
     run();
 }

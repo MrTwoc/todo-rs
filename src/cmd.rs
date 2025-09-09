@@ -3,7 +3,7 @@ use std::result::Result;
 
 use crate::task_module::*;
 use chrono::NaiveDate;
-use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+// use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use regex::Regex;
 // use comfy_table::{ColumnConstraint, ContentArrangement, Table, Width};
 // use owo_colors::*;
@@ -188,64 +188,72 @@ pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
     println!(
         " {} {} {} {} {} {} {}",
         colored_left_pad(
-            &colored_left_pad("ID", 3)
-                .on_blue()
-                .white()
+            &colored_left_pad("[ID]", 3)
+                // .on_blue()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             3
         ),
         colored_left_pad(
-            &colored_left_pad("Target", 15)
-                .on_blue()
-                .white()
+            &colored_left_pad("[Target]", 15)
+                // .on_blue()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             15
         ),
         colored_left_pad(
-            &colored_left_pad("Description", 30)
-                .on_cyan()
-                .white()
+            &colored_left_pad("[Description]", 30)
+                // .on_cyan()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             30
         ),
         colored_left_pad(
-            &colored_left_pad("Deadline", 10)
-                .on_bright_red()
-                .white()
+            &colored_left_pad("[Deadline]", 10)
+                // .on_bright_red()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             10
         ),
         colored_left_pad(
-            &colored_left_pad("Status", 10)
-                .on_green()
-                .white()
+            &colored_left_pad("[Status]", 10)
+                // .on_green()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             10
         ),
         colored_left_pad(
-            &colored_left_pad("Group", 10)
-                .on_magenta()
-                .white()
+            &colored_left_pad("[Group]", 10)
+                // .on_magenta()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             10
         ),
         colored_left_pad(
-            &colored_left_pad("Value", 10)
-                .on_red()
-                .white()
+            &colored_left_pad("[Value]", 10)
+                // .on_red()
+                // .white()
+                .bright_green()
                 .bold()
                 .to_string(),
             10
         )
     );
+    println!("{}", "-".repeat(100));
 
-    tasks.par_iter().for_each(|task| {
+    tasks.iter().for_each(|task| {
         let desc_str = task.description.as_deref().unwrap_or("无");
         let wrapped_desc = wrap(desc_str, 30);
         let id_str = task.id.unwrap().to_string();
