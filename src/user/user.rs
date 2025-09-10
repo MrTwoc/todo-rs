@@ -7,7 +7,7 @@ use std::{
     用户信息可以存在数据库中，数据库中存储用户信息，但不存储登录状态
     user 指令：
     user list
-    user old_passwd new_password
+    user pwd old_passwd new_password
     user add | del | edit | info
 */
 #[derive(Debug)]

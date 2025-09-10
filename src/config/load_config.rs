@@ -3,35 +3,32 @@
 use std::{fs, path::Path};
 
 use config::{Config, File};
-// use tracing::info;
+use tracing::info;
 
-// pub fn config_init() -> Result<(), Box<dyn std::error::Error>> {
-//     // 配置文件路径
-//     let config_path = "app_config.toml";
+use crate::config::config::AppConfig;
 
-//     // 如果文件不存在则创建
-//     if !std::path::Path::new(config_path).exists() {
-//         let default_config = r#"# 是否开启用户登陆
-// if_login = false"#;
-//         fs::write(config_path, default_config)?;
-//     }
-//     info!("配置文件初始化完成");
-//     Ok(())
-// }
-
-pub fn load_config() -> Result<Config, Box<dyn std::error::Error>> {
+pub fn load_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
     let config_path = "app_config.toml";
+
+    // 默认配置
+    let default_config = AppConfig {
+        if_login: false,
+        test: "test".to_string(),
+        test2: 123,
+    };
 
     // 确保配置文件存在
     if !Path::new(config_path).exists() {
-        let default_config = "if_login = true";
-        fs::write(config_path, default_config)?;
+        fs::write(config_path, toml::to_string(&default_config).unwrap())?;
+        info!("配置文件不存在，已创建默认配置文件")
     }
 
-    Config::builder()
+    let config = Config::builder()
         .add_source(File::with_name("app_config"))
-        .build()
-        .map_err(|e| e.into())
+        .build()?
+        .try_deserialize::<AppConfig>()?;
+    // .map_err(|e| e.into())
+    Ok(config)
 }
 
 /// 保存配置,可在运行时修改配置

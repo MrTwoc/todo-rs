@@ -18,13 +18,21 @@ pub fn init() -> Result<(), Box<dyn std::error::Error>> {
         error!("用户初始化失败: {:?}", e);
     }
     // info!("用户初始化完成");
+    // 加载配置文件,并根据if_login判断是否开启登陆功能
     match load_config::load_config() {
         Ok(_) => {
             let config = load_config::load_config()?;
 
-            let if_login = config.get::<bool>("if_login").unwrap_or(false);
+            // let if_login = config.get::<bool>("if_login").unwrap_or(false);
+            let if_login = config.if_login;
+            let test = config.test;
+            let test2 = config.test2;
 
-            let _app_config = AppConfig { if_login: if_login };
+            let _app_config = AppConfig {
+                if_login: if_login,
+                test: test,
+                test2: test2,
+            };
             // println!("if_login:{:?}", &_app_config.if_login);
             if _app_config.if_login {
                 user::user_modules::user_login()?;
