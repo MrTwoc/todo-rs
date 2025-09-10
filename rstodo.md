@@ -9,3 +9,9 @@
 
 ### 数据库模块
 1. 数据库读写
+
+### 多人同时协作
+1. quic 协议为主的通信
+2. web框架1：salvo
+3. FlatBuffer / protobuf / flexBuffer
+https://flatbuffers.dev/benchmarks/
