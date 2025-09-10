@@ -9,7 +9,9 @@ pub fn user_login() -> Result<(), Box<dyn Error>> {
     let if_login = config.if_login;
 
     if if_login == true {
-        // 用户名验证循环
+        /*
+        用户名验证循环（最多尝试3次）
+        */
         let username = loop {
             println!("请输入用户名 >");
             let mut input = String::new();

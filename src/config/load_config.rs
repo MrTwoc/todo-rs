@@ -12,9 +12,9 @@ pub fn load_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
 
     // 默认配置
     let default_config = AppConfig {
-        if_login: false,
-        test: "test".to_string(),
-        test2: 123,
+        if_login: false,          // 是否需要登录
+        test: "test".to_string(), // 测试用
+        test2: 123,               // 测试用
     };
 
     // 确保配置文件存在
