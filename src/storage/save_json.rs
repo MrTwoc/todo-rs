@@ -18,7 +18,7 @@ impl TaskStorage {
         Ok(())
     }
 
-    // 从json文件中读取电影列表
+    // 从json文件中读取任务列表
     pub fn read() -> Result<Vec<Target>, Box<dyn Error>> {
         // 检查缓存
         if let Some(cache) = TASKS_CACHE.read().unwrap().as_ref() {

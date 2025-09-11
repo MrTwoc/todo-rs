@@ -1,11 +1,11 @@
 use rusqlite::{ToSql, params};
 use tracing::info;
 
-use crate::storage::save_sql::get_conn;
-use crate::user::user::User;
+use crate::storage::save_sqlite::get_conn;
+use crate::user_module::user::User;
 
 impl User {
-    pub fn init() -> Result<(), Box<dyn std::error::Error>> {
+    pub fn db_init() -> Result<(), Box<dyn std::error::Error>> {
         let db_exists = std::path::Path::new("todo-rs.db").exists();
         if !db_exists {
             let conn = get_conn()?;

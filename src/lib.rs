@@ -6,5 +6,6 @@ pub mod logger;
 pub mod storage;
 pub mod target_impl;
 pub mod task_module;
+pub mod task_sql;
 pub mod todors_init;
-pub mod user;
+pub mod user_module;

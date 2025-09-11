@@ -7,14 +7,14 @@ use tracing::error;
 use crate::{
     config::{self, config::AppConfig},
     help,
-    user::{self, user::User},
+    user_module::{self, user::User},
 };
 use config::load_config;
 
 pub fn init() -> Result<(), Box<dyn std::error::Error>> {
     // let _guard = logger::init_logger();
 
-    if let Err(e) = User::init() {
+    if let Err(e) = User::db_init() {
         error!("用户初始化失败: {:?}", e);
     }
     // info!("用户初始化完成");
@@ -35,7 +35,7 @@ pub fn init() -> Result<(), Box<dyn std::error::Error>> {
             };
             // println!("if_login:{:?}", &_app_config.if_login);
             if _app_config.if_login {
-                user::user_modules::user_login()?;
+                user_module::user_mod::user_login()?;
             }
         }
         Err(e) => {

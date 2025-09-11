@@ -20,34 +20,9 @@ pub struct Target {
 
     /// 任务价值,取代任务级别(0~255)
     pub task_value: u8,
+    // 任务标签: 可以存储任务的一些额外信息,如创建者、创建时间、任务类型等
+    // pub tags: Option<HashMap<String, String>>,
 }
-
-// #[derive(Debug, Clone, Serialize, Deserialize)]
-// pub enum TaskLevel {
-//     // 或者给任务级别，改成任务价值，例如价值100
-//     /// 低
-//     Low,
-//     /// 一般
-//     Normal,
-//     /// 中等
-//     Medium,
-//     /// 重要
-//     High,
-//     // 把任务级别改为价值后，把[秘密|机密|绝密]变成隐藏类型
-// }
-
-// impl std::str::FromStr for TaskLevel {
-//     type Err = String;
-
-//     fn from_str(s: &str) -> Result<Self, Self::Err> {
-//         match s {
-//             "Normal" | "一般" => Ok(TaskLevel::Normal),
-//             "Medium" | "中等" => Ok(TaskLevel::Medium),
-//             "High" | "重要" => Ok(TaskLevel::High),
-//             _ => Err(format!("无效的任务级别: {}", s)),
-//         }
-//     }
-// }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub enum TargetStatus {
@@ -76,15 +51,3 @@ impl std::fmt::Display for TargetStatus {
         write!(f, "{s}")
     }
 }
-
-// impl std::fmt::Display for TaskLevel {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         let s = match self {
-//             TaskLevel::Low => "低",
-//             TaskLevel::Normal => "正常",
-//             TaskLevel::Medium => "中",
-//             TaskLevel::High => "高",
-//         };
-//         write!(f, "{s}")
-//     }
-// }

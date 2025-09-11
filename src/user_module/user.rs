@@ -26,9 +26,38 @@ pub struct LoginInfo {
     // 这里会有个bug，如果不活跃的账户的程序一直运行不关闭的话，
     // 登陆信息也不会清除，前期先不考虑
     pub is_login: bool,
+    pub id: u8,
+    pub username: String,
+    pub user_level: u8,
 }
 
 pub struct OnineUser {
     /// u8:用户ID、这里可以将参数类型改为 DashMap
     pub user_info: Arc<RwLock<HashMap<u8, LoginInfo>>>,
+}
+
+impl OnineUser {
+    pub fn new() -> Self {
+        Self {
+            user_info: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+    pub fn add_online_user(
+        &mut self,
+        user_id: u8,
+        is_login: bool,
+        username: String,
+        user_level: u8,
+    ) {
+        let mut user_info = self.user_info.write().unwrap();
+        user_info.insert(
+            user_id,
+            LoginInfo {
+                is_login,
+                id: user_id,
+                username,
+                user_level,
+            },
+        );
+    }
 }

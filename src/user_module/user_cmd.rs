@@ -1,7 +1,7 @@
 use owo_colors::OwoColorize;
 use tracing::error;
 
-use crate::user::user::User;
+use crate::user_module::user::User;
 
 pub fn command_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     if args.len() == 1 {

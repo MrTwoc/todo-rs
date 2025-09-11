@@ -2,9 +2,14 @@ use std::{error::Error, io};
 
 use tracing::info;
 
-use crate::{config::load_config::load_config, user::user::User};
+use crate::{
+    config::load_config::load_config, user_module::user::OnineUser, user_module::user::User,
+};
 
 pub fn user_login() -> Result<(), Box<dyn Error>> {
+    // 初始化在线用户列表
+    let mut online_user = OnineUser::new();
+
     let config = load_config()?;
     let if_login = config.if_login;
 
@@ -38,6 +43,10 @@ pub fn user_login() -> Result<(), Box<dyn Error>> {
             if password_input == user_pwd.password {
                 println!("登录成功");
                 info!("User {} Login Success", username);
+
+                // 登录成功后，将用户加入在线用户列表
+                online_user.add_online_user(user_pwd.id, true, username, user_pwd.level);
+
                 break;
             } else {
                 attempts += 1;
