@@ -1,15 +1,44 @@
-use std::{error::Error, io};
+use std::{collections::HashMap, error::Error, io};
 
-use tracing::info;
+use tracing::{info, warn};
 
 use crate::{
-    config::load_config::load_config, user_module::user::OnineUser, user_module::user::User,
+    config::load_config::load_config,
+    user_module::user::{LoginInfo, OnlineUser, User},
 };
 
-pub fn user_login() -> Result<(), Box<dyn Error>> {
-    // 初始化在线用户列表
-    let mut online_user = OnineUser::new();
+use std::sync::{OnceLock, RwLock};
+static ONLINE_USERS: OnceLock<RwLock<OnlineUser>> = OnceLock::new();
 
+pub fn init_online_users() {
+    ONLINE_USERS.get_or_init(|| {
+        RwLock::new(OnlineUser {
+            user_info: HashMap::new(),
+        })
+    });
+}
+
+pub fn get_online_users() -> &'static RwLock<OnlineUser> {
+    ONLINE_USERS.get_or_init(|| {
+        warn!("OnlineUsers 未初始化,使用默认值");
+        RwLock::new(OnlineUser {
+            user_info: HashMap::new(),
+        })
+    })
+}
+
+pub fn add_online_user(user: &User) {
+    let mut guard = get_online_users().write().unwrap();
+    guard.user_info.insert(
+        user.id,
+        LoginInfo {
+            username: user.name.clone(),
+            user_level: user.level,
+        },
+    );
+}
+
+pub fn user_login() -> Result<(), Box<dyn Error>> {
     let config = load_config()?;
     let if_login = config.if_login;
 
@@ -43,9 +72,7 @@ pub fn user_login() -> Result<(), Box<dyn Error>> {
             if password_input == user_pwd.password {
                 println!("登录成功");
                 info!("User {} Login Success", username);
-
-                // 登录成功后，将用户加入在线用户列表
-                online_user.add_online_user(user_pwd.id, true, username, user_pwd.level);
+                add_online_user(&user_pwd);
 
                 break;
             } else {

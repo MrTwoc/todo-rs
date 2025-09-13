@@ -1,7 +1,7 @@
 use owo_colors::OwoColorize;
 use tracing::error;
 
-use crate::user_module::user::User;
+use crate::user_module::{user::User, user_mod::get_online_users};
 
 pub fn command_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     if args.len() == 1 {
@@ -26,6 +26,9 @@ pub fn command_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         }
         "pwd" => {
             change_pwd(args)?;
+        }
+        "online" => {
+            online_users()?;
         }
         _ => {
             eprintln!("{} > {}", "未知命令".red(), args[1]);
@@ -100,4 +103,17 @@ pub fn find_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
 /// user pwd old_pwd new_pwd
 pub fn change_pwd(_args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     todo!("change_pwd");
+}
+
+pub fn online_users() -> Result<(), Box<dyn std::error::Error>> {
+    let guard = get_online_users().read().unwrap();
+    println!("当前在线用户（{}位）：", guard.user_info.len());
+    guard.user_info.iter().for_each(|(id, info)| {
+        println!(
+            "ID: {:<4} 用户名: {:<10} 权限等级: {}",
+            id, info.username, info.user_level
+        );
+    });
+
+    Ok(())
 }

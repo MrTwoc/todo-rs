@@ -13,6 +13,8 @@ use config::load_config;
 
 pub fn init() -> Result<(), Box<dyn std::error::Error>> {
     // let _guard = logger::init_logger();
+    // 在init函数开头添加
+    crate::user_module::user_mod::init_online_users();
 
     if let Err(e) = User::db_init() {
         error!("用户初始化失败: {:?}", e);
