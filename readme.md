@@ -13,7 +13,7 @@ https://crates.io/crates/comfy-table  \
 https://zellij.dev/news/web-client-multiple-pane-actions/  \
 Tracing简要使用\
 https://rust-book.junmajinlong.com/ch102/tracing.html\  \
-应用进入后台运行
+应用进入后台运行\
 https://github.com/tauri-apps/tray-icon
 
 #### 简易展示
