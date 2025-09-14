@@ -7,8 +7,10 @@ use tracing::error;
 use crate::{
     config::{self, config::AppConfig},
     help,
+    task_mod::Target,
     user_module::{self, user::User},
 };
+
 use config::load_config;
 
 pub fn init() -> Result<(), Box<dyn std::error::Error>> {
@@ -16,9 +18,10 @@ pub fn init() -> Result<(), Box<dyn std::error::Error>> {
     // 在init函数开头添加
     crate::user_module::user_mod::init_online_users();
 
-    if let Err(e) = User::db_init() {
-        error!("用户初始化失败: {:?}", e);
+    if let Err(e) = init_db() {
+        error!("数据库初始化失败: {:?}", e);
     }
+
     // info!("用户初始化完成");
     // 加载配置文件,并根据if_login判断是否开启登陆功能
     match load_config::load_config() {
@@ -47,5 +50,11 @@ pub fn init() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("{}", &help::PRINT_TITLE.green());
     println!("{}", &help::TITLE_INFO.green());
+    Ok(())
+}
+
+fn init_db() -> Result<(), Box<dyn std::error::Error>> {
+    User::user_db_init()?;
+    Target::target_db_init()?;
     Ok(())
 }

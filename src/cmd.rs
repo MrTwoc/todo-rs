@@ -1,7 +1,7 @@
 use std::process::Command;
 use std::result::Result;
 
-use crate::task_module::*;
+use crate::{task_mod::*, task_module};
 use chrono::NaiveDate;
 // use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use regex::Regex;
@@ -132,11 +132,11 @@ pub fn command_update_status(args: &[&str]) -> Result<(), Box<dyn Error>> {
     }
 
     let status = match args[1] {
-        "pause" => TargetStatus::Pause,
-        "active" => TargetStatus::Active,
-        "done" => TargetStatus::Done,
-        "cancel" => TargetStatus::Cancel,
-        "outtime" => TargetStatus::OutTime,
+        "pause" => TaskStatus::Pause,
+        "active" => TaskStatus::Active,
+        "done" => TaskStatus::Done,
+        "cancel" => TaskStatus::Cancel,
+        "outtime" => TaskStatus::OutTime,
         _ => return Err("无效的状态参数，可选值: pause, active, done, cancel, outtime".into()),
     };
     let ids: Vec<u32> = args[2..]
@@ -162,6 +162,10 @@ pub fn command_find(args: &[&str]) -> Result<(), Box<dyn Error>> {
     info!("{:?}", &args);
 
     Ok(())
+}
+
+pub fn command_task_help() {
+    println!("{}", &task_module::about_task::_TASK_MODULE_INFO);
 }
 
 const REGEX_COLOR: &str = r"\x1B\[([0-9]{1,3}(;[0-9]{1,3})*)?[mGK]";
@@ -257,9 +261,9 @@ pub fn show_table(tasks: &[Target]) -> Result<(), Box<dyn Error>> {
         let desc_str = task.description.as_deref().unwrap_or("无");
         let wrapped_desc = wrap(desc_str, 30);
         let id_str = task.id.unwrap().to_string();
-        let target_name = task.target_name.to_string();
+        let target_name = task.task_name.to_string();
         let deadline_str = task.deadline.format("%Y-%m-%d").to_string();
-        let status_str = task.target_status.to_string();
+        let status_str = task.task_status.to_string();
         let group_str = task.group.as_deref().unwrap_or("无").to_string();
         let value_str = task.task_value.to_string();
 

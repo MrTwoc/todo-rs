@@ -25,6 +25,12 @@ pub const HELP_INFO: &str = r#"
 'exit'/'quit'/'q'将退出程序
 'clear'清空控制台
 'sysinfo'显示内存与cpu占用率
+=======================================
+'user help' 显示用户模块帮助信息
+'task help' 显示任务模块帮助信息
+"#;
+
+/*
 'add'/'del'/'edit'/'list'将显示相应信息
 
 add <名称> <截止日期>
@@ -34,7 +40,7 @@ edit <id> <字段> <新值>
 list 列出所有任务
 status <id> <id> <...> <状态> 【批量修改】
 状态: pause(暂停), active(进行中), done(已完成), cancel(已取消), outtime(已过期)
-"#;
+*/
 
 /*
 相关的emoji推荐,用于美化输出

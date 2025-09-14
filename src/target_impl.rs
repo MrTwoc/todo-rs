@@ -6,7 +6,7 @@ use chrono::NaiveDate;
 use crate::{
     cmd::{show_table, validate_and_parse_date},
     storage::save_json::TaskStorage,
-    task_module::{Target, TargetStatus},
+    task_mod::{Target, TaskStatus},
 };
 use rayon::prelude::*;
 
@@ -34,9 +34,9 @@ impl Target {
         // 创建任务对象
         tasks.push(Target {
             id: Some(tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1),
-            target_name,
+            task_name: target_name,
             deadline,
-            target_status: TargetStatus::default(),
+            task_status: TaskStatus::default(),
             description,
             group,
             // level: TaskLevel::Normal,
@@ -45,7 +45,7 @@ impl Target {
 
         TaskStorage::save(&tasks)?;
         if let Some(task) = tasks.last() {
-            println!("添加成功=>\n任务：{:?}", task.target_name);
+            println!("添加成功=>\n任务：{:?}", task.task_name);
         }
 
         Ok(())
@@ -103,7 +103,7 @@ impl Target {
 
             // 任务状态和任务级别用指令单独修改
             match field {
-                "name" => task.target_name = value.to_string(),
+                "name" => task.task_name = value.to_string(),
                 "deadline" => task.deadline = validate_and_parse_date(value)?,
                 "description" => task.description = Some(value.to_string()),
                 "group" => task.group = Some(value.to_string()),
@@ -119,11 +119,11 @@ impl Target {
         Ok(())
     }
 
-    pub fn update_status(ids: &[u32], status: TargetStatus) -> Result<(), Box<dyn Error>> {
+    pub fn update_status(ids: &[u32], status: TaskStatus) -> Result<(), Box<dyn Error>> {
         let mut tasks = TaskStorage::read()?;
         tasks.par_iter_mut().for_each(|task| {
             if ids.contains(&task.id.unwrap_or(0)) {
-                task.target_status = status.clone();
+                task.task_status = status.clone();
             }
         });
         TaskStorage::save(&tasks)?;
@@ -142,7 +142,7 @@ impl Target {
         let filtered_tasks = tasks
             .par_iter()
             .filter(|t| {
-                contains_keyword(&t.target_name) // 匹配任务名称
+                contains_keyword(&t.task_name) // 匹配任务名称
                 || t.description.as_deref().is_some_and(contains_keyword)
                 || t.group.as_deref().is_some_and(contains_keyword)
             })

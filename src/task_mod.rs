@@ -6,11 +6,11 @@ pub struct Target {
     /// 任务id
     pub id: Option<u32>,
     /// 任务名称
-    pub target_name: String,
+    pub task_name: String,
     /// 截止日期
     pub deadline: chrono::NaiveDate,
     /// 任务状态
-    pub target_status: TargetStatus,
+    pub task_status: TaskStatus,
     /// 任务描述
     pub description: Option<String>,
     /// 任务分组
@@ -25,7 +25,7 @@ pub struct Target {
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
-pub enum TargetStatus {
+pub enum TaskStatus {
     /// 暂停中
     Pause,
     /// 进行中
@@ -39,14 +39,14 @@ pub enum TargetStatus {
     OutTime,
 }
 
-impl std::fmt::Display for TargetStatus {
+impl std::fmt::Display for TaskStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            TargetStatus::Pause => "⏸️ 暂停",
-            TargetStatus::Active => "🟢 进行",
-            TargetStatus::Done => "✅ 完成",
-            TargetStatus::Cancel => "❌ 取消",
-            TargetStatus::OutTime => "⏳ 过期",
+            TaskStatus::Pause => "⏸️ 暂停",
+            TaskStatus::Active => "🟢 进行",
+            TaskStatus::Done => "✅ 完成",
+            TaskStatus::Cancel => "❌ 取消",
+            TaskStatus::OutTime => "⏳ 过期",
         };
         write!(f, "{s}")
     }

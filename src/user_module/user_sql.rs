@@ -5,7 +5,7 @@ use crate::storage::save_sqlite::get_conn;
 use crate::user_module::user::User;
 
 impl User {
-    pub fn db_init() -> Result<(), Box<dyn std::error::Error>> {
+    pub fn user_db_init() -> Result<(), Box<dyn std::error::Error>> {
         let db_exists = std::path::Path::new("todo-rs.db").exists();
         if !db_exists {
             let conn = get_conn()?;
@@ -23,8 +23,8 @@ impl User {
 
             conn.execute_batch(
                 "BEGIN;
-         INSERT INTO user (name, password, level) VALUES (admin, admin, 1);
-         INSERT INTO user (name, password, level) VALUES (user, user, 0);
+         INSERT INTO user (name, password, level) VALUES ('admin', 'admin', 1);
+         INSERT INTO user (name, password, level) VALUES ('user', 'user', 0);
          COMMIT;",
             )?;
             info!("测试用户插入成功 [2/2]");

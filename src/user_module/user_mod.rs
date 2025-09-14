@@ -58,7 +58,7 @@ pub fn user_login() -> Result<(), Box<dyn Error>> {
             }
         };
 
-        // 密码验证循环（最多尝试3次）
+        // 密码验证循环（最多尝试3次）,这里可以写入配置文件
         let mut attempts = 0;
         let user_pwd = User::find(&username)?;
         loop {

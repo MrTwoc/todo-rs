@@ -35,6 +35,14 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
             println!("{}", &help::PRINT_TITLE.green());
             println!("{}", &help::TITLE_INFO);
         }
+        // 暂时这样
+        "task" => {
+            if args.len() == 1 {
+                command_task_help();
+            } else if args[1] == "help" {
+                command_task_help();
+            }
+        }
         "user" => {
             command_user(&args)?;
         }

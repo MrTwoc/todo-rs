@@ -2,7 +2,7 @@ use std::{error::Error, fs, io, sync::RwLock};
 
 use tracing::error;
 
-use crate::task_module::Target;
+use crate::task_mod::Target;
 
 /// 任务缓存
 static TASKS_CACHE: RwLock<Option<Vec<Target>>> = RwLock::new(None);

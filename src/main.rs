@@ -32,7 +32,7 @@ fn run() {
                 info!("input: help");
             }
             _ => {
-                // 进入命令处理阶段
+                // 进入命令处理阶段，处理task和user相关指令
                 if let Err(e) = cmd_handler::command_handle(&input) {
                     eprintln!("命令处理失败: {}", e);
                 }

@@ -1,7 +1,7 @@
 use owo_colors::OwoColorize;
 use tracing::error;
 
-use crate::user_module::{user::User, user_mod::get_online_users};
+use crate::user_module::{about_user::_USER_MODULE_INFO, user::User, user_mod::get_online_users};
 
 pub fn command_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     if args.len() == 1 {
@@ -29,6 +29,9 @@ pub fn command_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         }
         "online" => {
             online_users()?;
+        }
+        "help" => {
+            user_help()?;
         }
         _ => {
             eprintln!("{} > {}", "未知命令".red(), args[1]);
@@ -100,11 +103,13 @@ pub fn find_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/// 改变用户密码
 /// user pwd old_pwd new_pwd
 pub fn change_pwd(_args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     todo!("change_pwd");
 }
 
+/// 显示当前在线用户
 pub fn online_users() -> Result<(), Box<dyn std::error::Error>> {
     let guard = get_online_users().read().unwrap();
     println!("当前在线用户（{}位）：", guard.user_info.len());
@@ -115,5 +120,10 @@ pub fn online_users() -> Result<(), Box<dyn std::error::Error>> {
         );
     });
 
+    Ok(())
+}
+
+pub fn user_help() -> Result<(), Box<dyn std::error::Error>> {
+    println!("{}", _USER_MODULE_INFO);
     Ok(())
 }
