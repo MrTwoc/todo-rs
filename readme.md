@@ -12,7 +12,7 @@ https://crates.io/crates/comfy-table  \
 将终端搬入浏览器  \
 https://zellij.dev/news/web-client-multiple-pane-actions/  \
 Tracing简要使用\
-https://rust-book.junmajinlong.com/ch102/tracing.html\
+https://rust-book.junmajinlong.com/ch102/tracing.html\  \
 应用进入后台运行
 https://github.com/tauri-apps/tray-icon
 
@@ -71,7 +71,7 @@ https://github.com/tauri-apps/tray-icon
 - 持久化管理：
     目前使用的是json文件存储任务，
     计划后续改为sqlite存储任务、用户数据。
-    toml存储文件config
+    ✅ 配置文件使用toml存储
 
 
 #### 项目优化
