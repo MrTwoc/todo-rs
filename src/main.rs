@@ -16,7 +16,7 @@ fn run() {
     let mut input = String::with_capacity(128); // 预分配缓冲区
 
     loop {
-        print!("{}> ", "------------------------------\n".green());
+        print!("{}❯ ", "------------------------------\n".green());
         std::io::stdout().flush().unwrap();
         input.clear();
         io::stdin().read_line(&mut input).expect("命令输入失败");

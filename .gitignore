@@ -1,6 +1,7 @@
 /target
 /examples
 /logs
+/update_log
 .VSCodeCounter
 task.json
 todo_config.toml

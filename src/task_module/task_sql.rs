@@ -9,7 +9,7 @@ impl Target {
         conn.execute(
             "CREATE TABLE IF NOT EXISTS tasks(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            task_name TEXT,
+            task_name TEXT UNIQUE,
             deadline TEXT,
             task_status TEXT DEFAULT 'Active',
             description TEXT DEFAULT '无',
@@ -27,6 +27,24 @@ impl Target {
         )?;
         info!("测试任务插入成功 [2/2]");
         info!("任务初始化完成");
+        Ok(())
+    }
+
+    pub fn sql_add(task: &Target) -> Result<(), Box<dyn std::error::Error>> {
+        println!("sql_add函数执行！");
+        let conn = get_conn()?;
+        conn.execute(
+            "INSERT OR IGNORE INTO tasks (task_name, deadline, description, task_group) 
+     VALUES 
+        (?, ?, COALESCE(?, '无'), COALESCE(?, '无'))",
+            (
+                &task.task_name,
+                &task.deadline,
+                &task.description,
+                &task.group,
+            ),
+        )?;
+        info!("任务 {} 插入成功", &task.task_name);
         Ok(())
     }
 }

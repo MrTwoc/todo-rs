@@ -25,7 +25,7 @@ pub fn command_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
             find_user(args)?;
         }
         "pwd" => {
-            change_pwd(args)?;
+            set_pwd(args)?;
         }
         "online" => {
             online_users()?;
@@ -105,8 +105,21 @@ pub fn find_user(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
 
 /// 改变用户密码
 /// user pwd old_pwd new_pwd
-pub fn change_pwd(_args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
-    todo!("change_pwd");
+pub fn set_pwd(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
+    if args.len() < 3 {
+        eprintln!("{}", "user pwd 命令参数不足".red());
+        return Ok(());
+    }
+    let user = User {
+        id: 0,
+        name: args[2].to_string(),
+        password: args[3].to_string(),
+        level: 0,
+    };
+    println!("用户 {} 密码修改为 {}", &args[2].green(), &args[3].green());
+    User::set_pwd(&user)?;
+    println!("用户密码修改成功 > {}", &args[3].green());
+    Ok(())
 }
 
 /// 显示当前在线用户

@@ -24,7 +24,7 @@ rayon = "1.11.0"
 # 配置文件库
 config = "0.15.15"
 #    数据库操作库
-rusqlite = { version = "0.37.0", features = ["bundled"] }
+rusqlite = { version = "0.37.0", features = ["bundled", "chrono"] }
 #    存储配置文件
 toml = "0.9.5"
 

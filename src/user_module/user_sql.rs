@@ -13,7 +13,7 @@ impl User {
             conn.execute(
                 "CREATE TABLE user(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
+                name TEXT UNIQUE,
                 password TEXT,
                 level INTEGER DEFAULT 0
                 )",
@@ -105,9 +105,9 @@ impl User {
     /// 修改用户密码
     pub fn set_pwd(user: &User) -> Result<(), Box<dyn std::error::Error>> {
         let conn = get_conn()?;
-        let mut stmt = conn.prepare("UPDATE user SET password = ? WHERE id = ?")?;
-        stmt.execute((&user.password, &user.id))?;
-        info!("Set user pwd > {} to {}", &user.id, &user.password);
+        let mut stmt = conn.prepare("UPDATE user SET password = ? WHERE name = ?")?;
+        stmt.execute((&user.password, &user.name))?;
+        info!("Set user pwd > {} to {}", &user.name, &user.password);
         Ok(())
     }
 }

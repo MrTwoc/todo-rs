@@ -31,17 +31,21 @@ impl Target {
     ) -> Result<(), Box<dyn Error>> {
         let mut tasks = TaskStorage::read()?;
 
-        // 创建任务对象
-        tasks.push(Target {
+        let target = Target {
             id: Some(tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1),
             task_name: target_name,
             deadline,
             task_status: TaskStatus::default(),
             description,
             group,
-            // level: TaskLevel::Normal,
             task_value: 0,
-        });
+        };
+
+        // 将其保存到sqlite
+        Target::sql_add(&target)?;
+
+        // 创建任务对象
+        tasks.push(target);
 
         TaskStorage::save(&tasks)?;
         if let Some(task) = tasks.last() {
