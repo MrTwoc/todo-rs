@@ -1,4 +1,7 @@
+use rusqlite::types::{FromSql, FromSqlError, ValueRef};
 use serde::{Deserialize, Serialize};
+
+use crate::task_mod;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 
@@ -49,5 +52,19 @@ impl std::fmt::Display for TaskStatus {
             TaskStatus::OutTime => "⏳ 过期",
         };
         write!(f, "{s}")
+    }
+}
+
+impl FromSql for TaskStatus {
+    fn column_result(value: ValueRef<'_>) -> Result<task_mod::TaskStatus, FromSqlError> {
+        let s = value.as_str()?;
+        Ok(match s {
+            "Pause" => TaskStatus::Pause,
+            "Active" => TaskStatus::Active,
+            "Done" => TaskStatus::Done,
+            "Cancel" => TaskStatus::Cancel,
+            "OutTime" => TaskStatus::OutTime,
+            _ => TaskStatus::Active,
+        })
     }
 }

@@ -29,10 +29,13 @@ impl Target {
         description: Option<String>,
         group: Option<String>,
     ) -> Result<(), Box<dyn Error>> {
-        let mut tasks = TaskStorage::read()?;
+        // let mut tasks = TaskStorage::read()?;
+        // let id = tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1;
 
         let target = Target {
-            id: Some(tasks.iter().filter_map(|t| t.id).max().unwrap_or(0) + 1),
+            // id: Some(id),
+            // 如果存储到数据库，则不再需要主动提供id字段
+            id: None,
             task_name: target_name,
             deadline,
             task_status: TaskStatus::default(),
@@ -45,12 +48,12 @@ impl Target {
         Target::sql_add(&target)?;
 
         // 创建任务对象
-        tasks.push(target);
+        // tasks.push(target);
 
-        TaskStorage::save(&tasks)?;
-        if let Some(task) = tasks.last() {
-            println!("添加成功=>\n任务：{:?}", task.task_name);
-        }
+        // TaskStorage::save(&tasks)?;
+        // if let Some(task) = tasks.last() {
+        //     println!("添加成功=>\n任务：{:?}", task.task_name);
+        // }
 
         Ok(())
     }
@@ -65,27 +68,36 @@ impl Target {
     /// 后面跟一个不存在的id也会执行成功，但不会报错，
     /// 不过也会把真实存在的id删除
     pub fn del_many(ids: &[u32]) -> Result<(), Box<dyn Error>> {
-        let mut tasks = TaskStorage::read()?;
-        let initial_len = tasks.len();
-        // tasks.retain(|task| task.id != Some(id));
-        tasks.retain(|t| !ids.contains(&t.id.unwrap()));
-
-        if tasks.len() < initial_len {
-            TaskStorage::save(&tasks)?;
-            println!("已删除任务: {:?}", ids);
-        } else {
-            eprintln!("找不到对应的任务: {:?}", ids);
+        // 从sqlite中删除任务
+        for id in ids {
+            Target::sql_del(id)?;
         }
+
+        // let mut tasks = TaskStorage::read()?;
+        // let initial_len = tasks.len();
+        // // tasks.retain(|task| task.id != Some(id));
+        // tasks.retain(|t| !ids.contains(&t.id.unwrap()));
+
+        // if tasks.len() < initial_len {
+        //     TaskStorage::save(&tasks)?;
+        //     println!("已删除任务: {:?}", ids);
+        // } else {
+        //     eprintln!("找不到对应的任务: {:?}", ids);
+        // }
         Ok(())
     }
 
     pub fn list() -> Result<(), Box<dyn Error>> {
-        let tasks = TaskStorage::read()?;
+        // let tasks = TaskStorage::read()?;
+        let tasks = Target::get_all_tasks()?;
         show_table(&tasks)?;
         Ok(())
     }
 
     pub fn edit(args: &[&str]) -> Result<(), Box<dyn Error>> {
+        // println!("edit:{:?}", &args);
+        Target::sql_edit(args)?;
+
         let id: u32 = args[1]
             .parse()
             .map_err(|_| format!("无效的任务ID: {}", args[1]))?;
