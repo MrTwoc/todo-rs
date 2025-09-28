@@ -89,7 +89,7 @@ impl Target {
 
     pub fn list() -> Result<(), Box<dyn Error>> {
         // let tasks = TaskStorage::read()?;
-        let tasks = Target::get_all_tasks()?;
+        let tasks = Target::sql_get_all_tasks()?;
         show_table(&tasks)?;
         Ok(())
     }

@@ -128,23 +128,24 @@ pub fn command_del(args: &[&str]) -> Result<(), Box<dyn Error>> {
 
 pub fn command_update_status(args: &[&str]) -> Result<(), Box<dyn Error>> {
     if args.len() < 2 {
-        return Err("参数不匹配，使用方法: status <任务ID> <状态>\n状态分类：pause, active, done, cancel, outtime".into());
+        return Err("参数不匹配，使用方法: status <任务状态> <状态ID>\n状态分类：pause, active, done, cancel, outtime".into());
     }
 
-    let status = match args[1] {
-        "pause" => TaskStatus::Pause,
-        "active" => TaskStatus::Active,
-        "done" => TaskStatus::Done,
-        "cancel" => TaskStatus::Cancel,
-        "outtime" => TaskStatus::OutTime,
-        _ => return Err("无效的状态参数，可选值: pause, active, done, cancel, outtime".into()),
-    };
-    let ids: Vec<u32> = args[2..]
-        .iter()
-        .map(|s| s.parse())
-        .collect::<Result<_, _>>()?;
+    // let status = match args[1] {
+    //     "pause" => TaskStatus::Pause,
+    //     "active" => TaskStatus::Active,
+    //     "done" => TaskStatus::Done,
+    //     "cancel" => TaskStatus::Cancel,
+    //     "outtime" => TaskStatus::OutTime,
+    //     _ => return Err("无效的状态参数，可选值: pause, active, done, cancel, outtime".into()),
+    // };
+    // let ids: Vec<u32> = args[2..]
+    //     .iter()
+    //     .map(|s| s.parse())
+    //     .collect::<Result<_, _>>()?;
 
-    Target::update_status(&ids, status)?;
+    // Target::update_status(&ids, status)?;
+    Target::sql_update_status(args)?;
     info!("{:?}", &args);
 
     Ok(())

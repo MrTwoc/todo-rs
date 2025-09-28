@@ -59,11 +59,11 @@ impl FromSql for TaskStatus {
     fn column_result(value: ValueRef<'_>) -> Result<task_mod::TaskStatus, FromSqlError> {
         let s = value.as_str()?;
         Ok(match s {
-            "Pause" => TaskStatus::Pause,
-            "Active" => TaskStatus::Active,
-            "Done" => TaskStatus::Done,
-            "Cancel" => TaskStatus::Cancel,
-            "OutTime" => TaskStatus::OutTime,
+            "pause" => TaskStatus::Pause,
+            "active" => TaskStatus::Active,
+            "done" => TaskStatus::Done,
+            "cancel" => TaskStatus::Cancel,
+            "outtime" => TaskStatus::OutTime,
             _ => TaskStatus::Active,
         })
     }

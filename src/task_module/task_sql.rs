@@ -84,7 +84,7 @@ impl Target {
     }
 
     // 获取数据库所有任务
-    pub fn get_all_tasks() -> Result<Vec<Target>, Box<dyn std::error::Error>> {
+    pub fn sql_get_all_tasks() -> Result<Vec<Target>, Box<dyn std::error::Error>> {
         // println!("[sqlite]get_all_tasks执行");
         let conn = get_conn()?;
         let mut stmt = conn
@@ -136,6 +136,26 @@ impl Target {
             }
         }
         false
+    }
+
+    // 更新任务状态，支持批量更新
+    // status 状态 id数组
+    pub fn sql_update_status(args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
+        let status = args[1];
+        let ids: Vec<u32> = args[2..]
+            .iter()
+            .map(|s| s.parse())
+            .collect::<Result<_, _>>()?;
+        let conn = get_conn()?;
+        for id in ids {
+            conn.execute(
+                "UPDATE tasks SET task_status = ? WHERE id = ?",
+                (status, id),
+            )?;
+        }
+        info!("[sqlite]任务状态更新成功");
+        println!("任务更新");
+        Ok(())
     }
 
     // 根据ID查询任务
@@ -233,6 +253,7 @@ impl Target {
                 _ => return Err(format!("不支持的字段: {}", field).into()),
             }
         }
+        info!("[sql_edit]任务 {} 被更新", task_id);
 
         Ok(())
     }
