@@ -25,6 +25,7 @@ pub const HELP_INFO: &str = r#"
 'exit'/'quit'/'q'将退出程序
 'clear'清空控制台
 'sysinfo'显示内存与cpu占用率
+'config <字段> <值>' 修改配置，如: config if_login true
 =======================================
 'user help' 显示用户模块帮助信息
 'task help' 显示任务模块帮助信息

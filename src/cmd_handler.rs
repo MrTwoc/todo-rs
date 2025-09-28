@@ -1,4 +1,4 @@
-use crate::{cmd::*, help, user_module::user_cmd::command_user};
+use crate::{cmd::*, config::load_config::save_config, help, user_module::user_cmd::command_user};
 use owo_colors::OwoColorize;
 use std::time::Instant;
 use tracing::{error, info};
@@ -45,6 +45,9 @@ pub fn command_handle(input: &str) -> Result<(), Box<dyn std::error::Error>> {
         }
         "user" => {
             command_user(&args)?;
+        }
+        "config" => {
+            save_config(&args)?;
         }
         _ => {
             eprintln!("{} > {}", "未知命令".red(), args[0]);
